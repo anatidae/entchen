@@ -56,17 +56,31 @@ class EntchenBot(irc.IRCClient):
             self.msg(channel, m)
 
         if msg.startswith("!head"):
-            if 'entchen' in msg:
-                m = self.git_head('/admin/verwaltung/repository/entchen.git/')
-            elif 'voliere' in msg:
-                m = self.git_head('/admin/verwaltung/repository/verwaltung.git/')
+            sp = msg.split()
+            branch = 'master'
+            if len(sp)>1:
+                repo = sp[1]
+            else:
+                repo = ''
+            if len(sp)>2:
+                branch = sp[2]
+
+            if repo == 'entchen':
+                m = self.git_head('/admin/verwaltung/repository/entchen.git/', 
+                                  branch)
+            elif repo == 'voliere':
+                m = self.git_head('/admin/verwaltung/repository/verwaltung.git/',
+                                  branch)
+            elif repo == 'issues':
+                m = self.git_head('/admin/verwaltung/repository/issues.git/', 
+                                  branch)
             else:
                 m = 'give name of repo (i.e. entchen, voliere)'
             self.msg(channel, m)
 
-    def git_head(self, folder):
-        m = subprocess.Popen('cd %s; git log --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
-                                 % folder,
+    def git_head(self, folder, branch='master'):
+        m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
+                                 % (folder, branch),
                              shell=True, stdout=subprocess.PIPE).stdout
         return m.read()
 
