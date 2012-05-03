@@ -7,6 +7,17 @@ import sys
 import random
 import time
 
+class Config:
+    nickname = 'entchen'
+    server = '188.40.78.73'
+    channel = '#cl-study'
+
+class TestConfig:
+    nickname = 'testchen'
+    server = '188.40.78.73'
+    channel = '#test'
+
+
 class EntchenBot(irc.IRCClient):
     def _get_nickname(self):
         return self.factory.nickname
@@ -47,7 +58,7 @@ class EntchenBot(irc.IRCClient):
 class EntchenBotFactory(protocol.ClientFactory):
     protocol = EntchenBot
 
-    def __init__(self, channel, nickname='entchen'):
+    def __init__(self, channel, nickname):
         self.channel = channel
         self.nickname = nickname
 
@@ -61,7 +72,15 @@ class EntchenBotFactory(protocol.ClientFactory):
 
 if __name__ == "__main__":
 
-    reactor.connectSSL('188.40.78.73', 6668, EntchenBotFactory('#cl-study'),
+    if len(sys.argv)>1 and sys.argv[1] == 'testing':
+        c = TestConfig()
+    else:
+        c = Config()
+
+    reactor.connectSSL(c.server,
+                       6668, 
+                       EntchenBotFactory(channel=c.channel,
+                                         nickname=c.nickname),
                        ssl.ClientContextFactory())
 
     reactor.run()
