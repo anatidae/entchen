@@ -56,6 +56,10 @@ class EntchenBot(irc.IRCClient):
             self.msg(channel, m)
 
         if msg.startswith("!head"):
+
+            # TODO: check if branch exists
+            # TODO: cleanup
+
             sp = msg.split()
             branch = 'master'
             if len(sp)>1:
