@@ -26,21 +26,18 @@ class EntchenBot(irc.IRCClient):
             l = ["quak","quak","schnatter","quak quak"]
             self.msg(channel, random.choice(l))
 
-        if "fool" in msg.lower():
-            self.msg(channel, "zu Recht.")
-        
-        if "#uasy" in msg.lower():
-            self.msg(channel, "YEAH!")
+        messages = {}
+        messages['fool'] = 'zu Recht.'
+        messages['#uasy'] = 'YEAH!'
+        messages['feuer'] = "Getadelt wird wer Schmerzen kennt | " \
+            "Vom Feuer das die Haut verbrennt | Ich werf ein Licht " \
+            "| In mein Gesicht | Ein heisser Schrei | Feuer Frei! "
+        messages['sonne'] = "Hier kommt die Sonne."
+        messages['kaffee'] = "Da bin ich dabei!"
 
-        if "feuer" in msg.lower():
-            m = "Getadelt wird wer Schmerzen kennt | Vom Feuer das die Haut verbrennt | Ich werf ein Licht | In mein Gesicht | Ein heisser Schrei | Feuer Frei! "
-            self.msg(channel, m)
-
-        if "sonne" in msg.lower():
-            self.msg(channel, "Hier kommt die Sonne.")
-
-        if "kaffee" in msg.lower():
-            self.msg(channel, "Da bin ich dabei!")
+        for m in messages.keys():
+            if m in msg.lower():
+                self.msg(channel, messages.get(m))
 
         if msg.startswith("!date"):
             m = "Date: %s" % time.strftime("%a, %b %d, %Y", time.localtime())
