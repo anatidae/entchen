@@ -57,9 +57,9 @@ class EntchenBot(irc.IRCClient):
 
         if msg.startswith("!head"):
             if 'entchen' in msg:
-                m = self.git_head('~/entchen')
+                m = self.git_head('/admin/verwaltung/repository/entchen.git/')
             elif 'voliere' in msg:
-                m = self.git_head('/admin/verwaltung')
+                m = self.git_head('/admin/verwaltung/repository/verwaltung.git/')
             else:
                 m = 'give name of repo (i.e. entchen, voliere)'
             self.msg(channel, m)
