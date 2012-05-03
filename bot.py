@@ -6,6 +6,7 @@ from twisted.internet import reactor, ssl
 import sys
 import random
 import time
+import subprocess
 
 class Config:
     nickname = 'entchen'
@@ -53,6 +54,21 @@ class EntchenBot(irc.IRCClient):
         if msg.startswith("!date"):
             m = "Date: %s" % time.strftime("%a, %b %d, %Y", time.localtime())
             self.msg(channel, m)
+
+        if msg.startswith("!head"):
+            if 'entchen' in msg:
+                m = self.git_head('~/entchen')
+            elif 'voliere' in msg:
+                m = self.git_head('/admin/verwaltung')
+            else:
+                m = 'give name of repo (i.e. entchen, voliere)'
+            self.msg(channel, m)
+
+    def git_head(self, folder):
+        m = subprocess.Popen('cd %s; git log --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
+                                 % folder,
+                             shell=True, stdout=subprocess.PIPE).stdout
+        return m.read()
 
 
 class EntchenBotFactory(protocol.ClientFactory):
