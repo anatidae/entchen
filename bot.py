@@ -25,12 +25,8 @@ class BotPlugin(object):
 
     ## Extenders - add functionality
     def add_any(self, f):
-        def wrapped(bot, user, channel, msg):
-            f(bot, user, channel, msg)
-        wrapped.__name__ = f.__name__
-        wrapped.__doc__ = f.__doc__
-        self._msghandlers.append(wrapped)
-        return wrapped
+        self._msghandlers.append(f)
+        return f
         
     def add_startswith(self, head, f):
         def wrapped(bot, user, channel, msg):
@@ -52,8 +48,7 @@ class BotPlugin(object):
         
     ## Decorators
     def any(self, f):
-        self.add_any(f)
-        return f
+        return self.add_any(f)
             
     def startswith(self, head):
         def wrap(f):
