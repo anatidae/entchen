@@ -79,6 +79,35 @@ class EntchenBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
+        
+        if msg.startswith('!reload'):
+            args = msg.split()[1:]
+            if len(args) > 0:
+                self.msg(channel, 'reloading %s'%', '.join(args))
+                for arg in args:
+                    self.factory.reload_plugin(arg)
+            else:
+                self.msg(channel, 'reloading all plugins')
+                self.factory.reload_plugins()
+            return
+        if msg.startswith('!load'):
+            args = msg.split()[1:]
+            if len(args) > 0:
+                self.msg(channel, 'loading %s'%', '.join(args))
+                for arg in args:
+                    self.factory.add_plugin(arg)
+            else:
+                self.msg(channel, 'load needs one or more plugins to be loaded')
+            return
+        if msg.startswith('!unload'):
+            args = msg.split()[1:]
+            if len(args) > 0:
+                self.msg(channel, 'unloading %s'%', '.join(args))
+                for arg in args:
+                    self.factory.del_plugin(arg)
+            else:
+                self.msg(channel, 'unload needs one or more plugins to be unloaded')
+            return
 
         if self.nickname in msg:
             l = ["quak","quak","schnatter","quak quak"]
@@ -111,6 +140,18 @@ class EntchenBotFactory(protocol.ClientFactory):
             plugin.factory = self
             self._plugins[name] = plugin
             
+    def del_plugin(self, plugin):
+        if plugin in self._plugins:
+            del self._plugins[plugin]
+
+    def reload_plugin(self, plugin):
+        if plugin in self._plugins:
+            self.add_plugin(plugin, True)
+
+    def reload_plugins(self):
+        for plugin in self._plugins:
+            self.add_plugin(plugin, True)
+
     def clientConnectionLost(self, connector, reason):
         print "Lost connection (%s), reconnecting." % (reason,)
         connector.connect()
