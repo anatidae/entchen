@@ -3,10 +3,11 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from twisted.internet import reactor, ssl
-import sys
+import sys, os
 import random
 import time
 import subprocess
+import imp
 
 class Config:
     nickname = 'entchen'
@@ -18,6 +19,46 @@ class TestConfig:
     server = '188.40.78.73'
     channel = '#test'
 
+class BotPlugin(object):
+
+    def __init__(self, bot = None):
+        self.factory = None
+        self._msghandlers = []
+
+    ## Extenders - add functionality
+    def add_startswith(self, head, f):
+        def wrapped(bot, user, channel, msg):
+            if msg.lower().startswith(head.lower()):
+                f(bot, user, channel, msg)
+        wrapped.__name__ = f.__name__
+        wrapped.__doc__ = f.__doc__
+        self._msghandlers.append(wrapped)
+        return wrapped            
+
+    def add_contains(self, chunk, f):
+        def wrapped(bot, user, channel, msg):
+            if chunk.lower() in msg.lower():
+                f(bot, user, channel, msg)
+        wrapped.__name__ = f.__name__
+        wrapped.__doc__ = f.__doc__
+        self._msghandlers.append(wrapped)
+        return wrapped
+        
+    ## Decorators
+    def startswith(self, head):
+        def wrap(f):
+            return self.add_startswith(head, f)
+        return wrap
+
+    def contains(self, chunk):
+        def wrap(f):
+            return self.add_contains(chunk, f)
+        return wrap
+
+    ## helper methods
+    def privmsg(self, bot, user, channel, msg):
+        for func in self._msghandlers:
+            func(bot, user, channel, msg)
 
 class EntchenBot(irc.IRCClient):
     def _get_nickname(self):
@@ -82,6 +123,9 @@ class EntchenBot(irc.IRCClient):
                 m = 'give name of repo (i.e. entchen, voliere)'
             self.msg(channel, m)
 
+        for plugin in self.factory._plugins.values():
+            plugin.privmsg(self, user, channel, msg)
+
     def git_head(self, folder, branch='master'):
         m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
                                  % (folder, branch),
@@ -95,7 +139,24 @@ class EntchenBotFactory(protocol.ClientFactory):
     def __init__(self, channel, nickname):
         self.channel = channel
         self.nickname = nickname
+        self._plugins = {}
 
+    def add_plugin(self, plugin, override = False):
+        name = plugin
+        if name in self._plugins and not override:
+            print "Plugin named %s already loaded"%name
+            return
+        plugins = imp.load_module('plugins', *imp.find_module('plugins'))
+        pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
+        plugin = getattr(pluginmod, plugin)
+        from bot import BotPlugin # voodoo, next line won't work without this obnoxious import
+        if isinstance(plugin, BotPlugin):
+            if plugin.bot and not override:
+                print "Plugin already assigned to a bot, can't reassign"
+                return
+            plugin.bot = self
+            self._plugins[name] = plugin
+            
     def clientConnectionLost(self, connector, reason):
         print "Lost connection (%s), reconnecting." % (reason,)
         connector.connect()
