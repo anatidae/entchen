@@ -78,60 +78,9 @@ class EntchenBot(irc.IRCClient):
         if self.nickname in msg:
             l = ["quak","quak","schnatter","quak quak"]
             self.msg(channel, random.choice(l))
-
-        messages = {}
-        messages['fool'] = 'zu Recht.'
-        messages['#uasy'] = 'YEAH!'
-        messages['feuer'] = "Getadelt wird wer Schmerzen kennt | " \
-            "Vom Feuer das die Haut verbrennt | Ich werf ein Licht " \
-            "| In mein Gesicht | Ein heisser Schrei | Feuer Frei! "
-        messages['sonne'] = "Hier kommt die Sonne."
-        messages['kaffee'] = "Da bin ich dabei!"
-
-        for m in messages.keys():
-            if m in msg.lower():
-                self.msg(channel, messages.get(m))
-
-        if msg.startswith("!date"):
-            m = "Date: %s" % time.strftime("%a, %b %d, %Y", time.localtime())
-            self.msg(channel, m)
-
-        if msg.startswith("!head"):
-
-            # TODO: check if branch exists
-            # TODO: cleanup
-
-            sp = msg.split()
-            branch = 'master'
-            if len(sp)>1:
-                repo = sp[1]
-            else:
-                repo = ''
-            if len(sp)>2:
-                branch = sp[2]
-
-            if repo == 'entchen':
-                m = self.git_head('/admin/verwaltung/repository/entchen.git/', 
-                                  branch)
-            elif repo == 'voliere':
-                m = self.git_head('/admin/verwaltung/repository/verwaltung.git/',
-                                  branch)
-            elif repo == 'issues':
-                m = self.git_head('/admin/verwaltung/repository/issues.git/', 
-                                  branch)
-            else:
-                m = 'give name of repo (i.e. entchen, voliere)'
-            self.msg(channel, m)
-
+            
         for plugin in self.factory._plugins.values():
             plugin.privmsg(self, user, channel, msg)
-
-    def git_head(self, folder, branch='master'):
-        m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
-                                 % (folder, branch),
-                             shell=True, stdout=subprocess.PIPE).stdout
-        return m.read()
-
 
 class EntchenBotFactory(protocol.ClientFactory):
     protocol = EntchenBot
@@ -171,11 +120,16 @@ if __name__ == "__main__":
         c = TestConfig()
     else:
         c = Config()
+        
+    factory = EntchenBotFactory(channel=c.channel,
+                                nickname=c.nickname)
+    factory.add_plugin('chatter')
+    factory.add_plugin('date')
+    factory.add_plugin('git')
 
     reactor.connectSSL(c.server,
                        6668, 
-                       EntchenBotFactory(channel=c.channel,
-                                         nickname=c.nickname),
+                       factory,
                        ssl.ClientContextFactory())
 
     reactor.run()
