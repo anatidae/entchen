@@ -24,6 +24,14 @@ class BotPlugin(object):
         self._msghandlers = []
 
     ## Extenders - add functionality
+    def add_any(self, f):
+        def wrapped(bot, user, channel, msg):
+            f(bot, user, channel, msg)
+        wrapped.__name__ = f.__name__
+        wrapped.__doc__ = f.__doc__
+        self._msghandlers.append(wrapped)
+        return wrapped
+        
     def add_startswith(self, head, f):
         def wrapped(bot, user, channel, msg):
             if msg.lower().startswith(head.lower()):
@@ -43,6 +51,10 @@ class BotPlugin(object):
         return wrapped
         
     ## Decorators
+    def any(self, f):
+        self.add_any(f)
+        return f
+            
     def startswith(self, head):
         def wrap(f):
             return self.add_startswith(head, f)
