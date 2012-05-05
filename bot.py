@@ -3,10 +3,8 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from twisted.internet import reactor, ssl
-import sys, os
+import sys
 import random
-import time
-import subprocess
 import imp
 
 class Config:
@@ -100,10 +98,10 @@ class EntchenBotFactory(protocol.ClientFactory):
         plugin = getattr(pluginmod, plugin)
         from bot import BotPlugin # voodoo, next line won't work without this obnoxious import
         if isinstance(plugin, BotPlugin):
-            if plugin.bot and not override:
+            if plugin.factory and not override:
                 print "Plugin already assigned to a bot, can't reassign"
                 return
-            plugin.bot = self
+            plugin.factory = self
             self._plugins[name] = plugin
             
     def clientConnectionLost(self, connector, reason):
@@ -124,6 +122,8 @@ if __name__ == "__main__":
     factory = EntchenBotFactory(channel=c.channel,
                                 nickname=c.nickname)
     factory.add_plugin('chatter')
+    print factory._plugins['chatter']._msghandlers
+#    factory._plugins['chatter']._msghandlers[0](None, None, None, 'fool')
     factory.add_plugin('date')
     factory.add_plugin('git')
 

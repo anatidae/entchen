@@ -1,15 +1,16 @@
 from bot import BotPlugin
+import subprocess
 
 git = BotPlugin()
 
-def git_head(self, folder, branch='master'):
+def git_head(folder, branch='master'):
     m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
                              % (folder, branch),
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
 
 @git.startswith('!head')
-def say_git_head(bot user, channel, msg):
+def say_git_head(bot, user, channel, msg):
     # TODO: check if branch exists
     # TODO: cleanup
 
