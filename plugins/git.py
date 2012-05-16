@@ -4,7 +4,7 @@ import subprocess
 git = BotPlugin()
 
 def git_head(folder, branch='master'):
-    m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN]" HEAD -n 1' \
+    m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN] -- %%ar" HEAD -n 1' \
                              % (folder, branch),
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
