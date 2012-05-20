@@ -118,7 +118,19 @@ class EntchenBot(irc.IRCClient):
             else:
                 self.msg(channel, 'unload needs one or more plugins to be unloaded')
             return
-
+        if msg.startswith('!join'):
+            args = msg.split()[1:]
+            if len(args) > 0:
+                for arg in args:
+                    self.join(arg)
+        if msg.startswith('!part'):
+            args = msg.split()[1:]
+            if len(args) > 0:
+                for arg in args:
+                    self.part(arg)
+            else:
+                self.part(channel)
+        
         if self.nickname in msg:
             l = ["quak","quak","schnatter","quak quak"]
             self.msg(channel, random.choice(l))
