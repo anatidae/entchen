@@ -6,6 +6,7 @@ from twisted.internet import reactor, ssl
 import sys
 import random
 import imp
+import traceback
 
 class Config:
     nickname = 'entchen'
@@ -85,17 +86,26 @@ class EntchenBot(irc.IRCClient):
             if len(args) > 0:
                 self.msg(channel, 'reloading %s'%', '.join(args))
                 for arg in args:
-                    self.factory.reload_plugin(arg)
+                    error = self.factory.reload_plugin(arg)
+                    if error:
+                        self.msg(channel, 'error loading %s, see query'%arg)
+                        self.msg(user, error)
             else:
                 self.msg(channel, 'reloading all plugins')
-                self.factory.reload_plugins()
+                error = self.factory.reload_plugins()
+                if error:
+                    self.msg(channel, "failed to reload plugin(s) %s; see query"%', '.join(error[0]))
+                    self.msg(user, error[1])
             return
         if msg.startswith('!load'):
             args = msg.split()[1:]
             if len(args) > 0:
                 self.msg(channel, 'loading %s'%', '.join(args))
                 for arg in args:
-                    self.factory.add_plugin(arg)
+                    error = self.factory.add_plugin(arg)
+                    if error:
+                        self.msg(channel, 'error loading %s, see query'%arg)
+                        self.msg(user, error)
             else:
                 self.msg(channel, 'load needs one or more plugins to be loaded')
             return
@@ -129,9 +139,13 @@ class EntchenBotFactory(protocol.ClientFactory):
         if name in self._plugins and not override:
             print "Plugin named %s already loaded"%name
             return
-        plugins = imp.load_module('plugins', *imp.find_module('plugins'))
-        pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
-        plugin = getattr(pluginmod, plugin)
+        try:
+            plugins = imp.load_module('plugins', *imp.find_module('plugins'))
+            pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
+            plugin = getattr(pluginmod, plugin)
+        except:
+            e = sys.exc_info()[0]
+            return traceback.format_exc()
         from bot import BotPlugin # voodoo, next line won't work without this obnoxious import
         if isinstance(plugin, BotPlugin):
             if plugin.factory and not override:
@@ -139,6 +153,7 @@ class EntchenBotFactory(protocol.ClientFactory):
                 return
             plugin.factory = self
             self._plugins[name] = plugin
+        return ""
             
     def del_plugin(self, plugin):
         if plugin in self._plugins:
@@ -146,11 +161,15 @@ class EntchenBotFactory(protocol.ClientFactory):
 
     def reload_plugin(self, plugin):
         if plugin in self._plugins:
-            self.add_plugin(plugin, True)
+            return self.add_plugin(plugin, True)
 
     def reload_plugins(self):
+        error = ""
+        badplugs = []
         for plugin in self._plugins:
-            self.add_plugin(plugin, True)
+            error += self.add_plugin(plugin, True)
+            badplugs.append(plugin)
+        return (badplugs, errors)
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connection (%s), reconnecting." % (reason,)
@@ -170,7 +189,7 @@ if __name__ == "__main__":
     factory = EntchenBotFactory(channel=c.channel,
                                 nickname=c.nickname)
     factory.add_plugin('chatter')
-    print factory._plugins['chatter']._msghandlers
+#    print factory._plugins['chatter']._msghandlers
 #    factory._plugins['chatter']._msghandlers[0](None, None, None, 'fool')
     factory.add_plugin('date')
     factory.add_plugin('git')
