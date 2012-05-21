@@ -20,7 +20,7 @@ def meminfo(bot, user, channel, msg):
     (free, funit) = meminfo['MemFree'].split()
     total = int(total)
     free = int(free)
-    usedp = float(free)/float(total)*100.0
+    usedp = float(total-free)/float(total)*100.0
     if tunit == funit: 
         if tunit == "kB":
             bot.msg(channel,
