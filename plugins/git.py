@@ -9,19 +9,19 @@ def git_head(folder, branch='master'):
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
 
-@git.startswith('!head')
+@git.command('head')
 def say_git_head(bot, user, channel, msg):
     # TODO: check if branch exists
     # TODO: cleanup
 
     sp = msg.split()
     branch = 'master'
-    if len(sp)>1:
-        repo = sp[1]
+    if len(sp)>0:
+        repo = sp[0]
     else:
         repo = ''
-    if len(sp)>2:
-        branch = sp[2]
+    if len(sp)>1:
+        branch = sp[1]
 
     if repo == 'entchen':
         m = git_head('/admin/verwaltung/repository/entchen.git/', 
