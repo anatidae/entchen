@@ -1,7 +1,14 @@
 from bot import BotPlugin
 import copy
+import random
 
 chatter = BotPlugin()
+
+@chatter.any
+def say_voicing(bot, user, channel, msg):
+    if bot.nickname in msg and not msg.startswith(bot.nickname):
+        l = ["quak","quak","schnatter","quak quak"]
+        bot.msg(channel, random.choice(l))
 
 @chatter.any
 def say_stuff(bot, user, channel, msg):

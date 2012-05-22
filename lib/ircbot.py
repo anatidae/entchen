@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from twisted.words.protocols import irc
-import random
 
 class IRCBot(irc.IRCClient):
     def _get_nickname(self):
@@ -83,10 +82,6 @@ class IRCBot(irc.IRCClient):
             else:
                 self.part(channel)
         
-        if self.nickname in msg and not msg.startswith(self.nickname):
-            l = ["quak","quak","schnatter","quak quak"]
-            self.msg(channel, random.choice(l))
-            
         for plugin in self.factory._plugins.values():
             plugin.privmsg(self, user, channel, msg)
 
