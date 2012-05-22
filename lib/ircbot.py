@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from twisted.words.protocols import irc
+import random
 
 class IRCBot(irc.IRCClient):
     def _get_nickname(self):
