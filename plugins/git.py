@@ -41,6 +41,6 @@ def say_git_head(bot, user, channel, msg):
         m = git_head('/admin/verwaltung/repository/issues.git/', 
                      branch)
     else:
-        m = 'give name of repo (i.e. entchen, voliere)'
+        m = 'give name of repo (i.e. entchen, voliere) [optional name of branch]'
     bot.msg(channel, m)
 
