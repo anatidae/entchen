@@ -9,6 +9,14 @@ def git_head(folder, branch='master'):
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
 
+@git.command('botversion')
+def say_git_version(bot, user, channel, msg):
+    b = subprocess.Popen('git log --pretty=format:"%h -- %ar" HEAD -n 1',
+                         shell=True, stdout=subprocess.PIPE).stdout
+    m = b.read().strip()
+    bot.msg(channel, m)
+
+
 @git.command('head')
 def say_git_head(bot, user, channel, msg):
     # TODO: check if branch exists
