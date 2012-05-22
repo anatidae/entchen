@@ -21,8 +21,9 @@ class BotPlugin(object):
             elif msg.startswith(bot.nickname):
                 msg1 = msg[len(bot.nickname):]
                 msg1 = msg1.lstrip(self.factory.config.separators)
-                msg1 = msg1[len(head):]
-                f(bot, user, channel, msg1)
+                if msg1.lower().startswith(head.lower()):
+                    msg1 = msg1[len(head):]
+                    f(bot, user, channel, msg1)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
         self._msghandlers.append(wrapped)
