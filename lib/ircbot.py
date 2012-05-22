@@ -83,7 +83,7 @@ class IRCBot(irc.IRCClient):
             else:
                 self.part(channel)
         
-        if self.nickname in msg:
+        if self.nickname in msg and not msg.startswith(self.nickname):
             l = ["quak","quak","schnatter","quak quak"]
             self.msg(channel, random.choice(l))
             
