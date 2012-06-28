@@ -10,8 +10,9 @@ import imp
 class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
     protocol = IRCBot
 
-    def __init__(self, config):
+    def __init__(self, config, reactor):
         self.config = config
+        self.reactor = reactor
         self._init_plugins()
 
     def _init_plugins(self):

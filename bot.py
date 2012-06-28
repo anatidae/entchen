@@ -13,7 +13,7 @@ class Bot:
     
     def _init_factory(self):
         if self.config:
-            self.factory = BotFactory(config=self.config)
+            self.factory = BotFactory(config=self.config, reactor=self.reactor)
 
     def set_config(self, config):
         if not self.config:
