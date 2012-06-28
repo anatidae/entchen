@@ -1,5 +1,5 @@
 class Config:
-    plugins = ['chatter', 'date', 'git']
+    plugins = ['chatter', 'date', 'git', 'sysinfo', 'alarm']
     port = 6667
     ssl = False
     commandchars = "!" # values like "!." mean either "!" or "."
