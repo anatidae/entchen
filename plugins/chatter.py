@@ -1,6 +1,7 @@
 from bot import BotPlugin
 import copy
 import random
+import os.path
 
 chatter = BotPlugin()
 
@@ -10,16 +11,28 @@ def say_voicing(bot, user, channel, msg):
         l = ["quak","quak","schnatter","quak quak"]
         bot.msg(channel, random.choice(l))
 
+def get_data_from_file(fn=None):
+    """ Read data from file.
+
+    Syntax:
+    <key>=<value>
+    """
+    d = {}
+    if not fn:
+        fn = os.path.join(os.path.dirname(__file__),
+                          'chatter.data')
+    
+    fp = open(fn)
+    for line in fp.readlines():
+        x = line.split('=')
+        if len(x)>1:
+            d[x[0]] = x[1]
+    fp.close()
+    return d
+
 @chatter.any
 def say_stuff(bot, user, channel, msg):
-    messages = {}
-    messages['fool'] = 'zu Recht.'
-    messages['#uasy'] = 'YEAH!'
-    messages['feuer'] = "Getadelt wird wer Schmerzen kennt | " \
-        "Vom Feuer das die Haut verbrennt | Ich werf ein Licht " \
-        "| In mein Gesicht | Ein heisser Schrei | Feuer Frei! "
-    messages['sonne'] = "Hier kommt die Sonne."
-    messages['kaffee'] = "Da bin ich dabei!"
+    messages = get_data_from_file()
 
     for m in messages.keys():
         if m in msg.lower():
