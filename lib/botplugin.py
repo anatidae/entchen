@@ -13,17 +13,22 @@ class BotPlugin(object):
 
     def add_command(self, head, f):
         def wrapped(bot, user, channel, msg):
-            if msg[0] in self.factory.config.commandchars:
-                msg1 = msg[1:]
-                if msg1.lower().startswith(head.lower()):
-                    msg1 = msg1[len(head):]
-                    f(bot, user, channel, msg1.strip())
-            elif msg.startswith(bot.nickname):
-                msg1 = msg[len(bot.nickname):]
-                msg1 = msg1.lstrip(self.factory.config.separators)
-                if msg1.lower().startswith(head.lower()):
-                    msg1 = msg1[len(head):]
-                    f(bot, user, channel, msg1)
+            if type(head) == type([]):
+                headlist = head
+            else:
+                headlist = [head]
+            for head_elem in headlist:
+                if msg[0] in self.factory.config.commandchars:
+                    msg1 = msg[1:].decode('utf-8')
+                    if msg1.lower().startswith(head_elem.lower()):
+                        msg1 = msg1[len(head_elem):]
+                        f(bot, user, channel, msg1.strip())
+                elif msg.startswith(bot.nickname):
+                    msg1 = msg[len(bot.nickname):].decode('utf-8')
+                    msg1 = msg1.lstrip(self.factory.config.separators)
+                    if msg1.lower().startswith(head.lower()):
+                        msg1 = msg1[len(head):]
+                        f(bot, user, channel, msg1)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
         self._msghandlers.append(wrapped)
