@@ -45,8 +45,9 @@ def magiccmd(bot, user, channel, msg):
         ]
     bot.msg(channel, random.choice(choices))
 
+
 @randomness.command('spin')
-def magiccmd(bot, user, channel, msg):
+def spincmd(bot, user, channel, msg):
 
     def got_names(nicklist):
         # remove all @ in nicklist
