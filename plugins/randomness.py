@@ -44,3 +44,16 @@ def magiccmd(bot, user, channel, msg):
         'You may rely on it.',
         ]
     bot.msg(channel, random.choice(choices))
+
+@randomness.command('spin')
+def magiccmd(bot, user, channel, msg):
+
+    def got_names(nicklist):
+        # remove all @ in nicklist
+        nicklist = [i.replace('@','') for i in nicklist]
+        if bot._get_nickname() in nicklist:
+            nicklist.remove(bot._get_nickname())
+        bot.msg(channel, "Die Flasche zeigt auf %s!" %
+                random.choice(nicklist))
+
+    bot.names(channel).addCallback(got_names)
