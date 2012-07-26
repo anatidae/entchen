@@ -10,7 +10,7 @@ class EntchenConfig(Config):
     server = '188.40.78.73'
     port = 6668
     ssl = True
-    channels = ['#cl-study']
+    channels = ['#cl-study', '#admin']
 
 class TestConfig(EntchenConfig):
     nickname = 'testchen'
