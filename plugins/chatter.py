@@ -26,7 +26,7 @@ def get_data_from_file(fn=None):
     for line in fp.readlines():
         x = line.split('=')
         if len(x)>1:
-            d[x[0]] = x[1]
+            d[x[0]] = x[1].strip()
     fp.close()
     return d
 
