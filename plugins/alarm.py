@@ -4,7 +4,7 @@ import math
 
 alarm = BotPlugin()
 
-@alarm.command('nalarm')
+@alarm.command('alarm')
 def alarmcmd(bot, user, channel, msg):
     """ alarm is the German name for remind.
     """
