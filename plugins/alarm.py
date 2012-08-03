@@ -4,8 +4,10 @@ import math
 
 alarm = BotPlugin()
 
-@alarm.command('nalarm')
+@alarm.command('alarm')
 def alarmcmd(bot, user, channel, msg):
+    """ alarm is the German name for remind.
+    """
 
     # TODOs:
     # - save all reminders in the factory for a !showalarms command
@@ -27,6 +29,7 @@ def alarmcmd(bot, user, channel, msg):
         m = "%s: --- %s ---" % (username, s)
         bot.msg(channel, m)
 
+    # FIXME: best way to get the username?
     username = user.split('!')[0]
     message = None
     seconds = None
