@@ -26,7 +26,7 @@ def rollparse(msg):
     r = None
     num = 1
     if msg.isdigit():
-        r = range(1,int(msg))
+        r = range(1,int(msg)+1)
     else:
         rx = re.split(r'(\d*)[dw](\d+)', msg)
         if len(rx)>2:
@@ -36,7 +36,7 @@ def rollparse(msg):
     if r:
         s = ""
         for i in range(num):
-            s += "%d\n" % random.choice(r)
+            s += "%d " % random.choice(r)
         return s
     else:
         return "!roll <sides>"
