@@ -1,8 +1,49 @@
 # -*- coding: utf-8 -*-
 
 from twisted.words.protocols import irc
+from twisted.internet import defer
 
 class IRCBot(irc.IRCClient):
+
+    # get names of users in channel
+    # from http://stackoverflow.com/questions/6671620/list-users-in-irc-channel-using-twisted-python-irc-framework?lq=1
+    def __init__(self, *args, **kwargs):
+        self._namescallback = {}
+
+    def names(self, channel):
+        channel = channel.lower()
+        d = defer.Deferred()
+        if channel not in self._namescallback:
+            self._namescallback[channel] = ([], [])
+
+        self._namescallback[channel][0].append(d)
+        self.sendLine("NAMES %s" % channel)
+        return d
+
+    def irc_RPL_NAMREPLY(self, prefix, params):
+        channel = params[2].lower()
+        nicklist = params[3].split(' ')
+
+        if channel not in self._namescallback:
+            return
+
+        n = self._namescallback[channel][1]
+        n += nicklist
+
+    def irc_RPL_ENDOFNAMES(self, prefix, params):
+        channel = params[1].lower()
+        if channel not in self._namescallback:
+            return
+
+        callbacks, namelist = self._namescallback[channel]
+
+        for cb in callbacks:
+            cb.callback(namelist)
+
+        del self._namescallback[channel]
+
+    # end of names calls #
+
     def _get_nickname(self):
         if not hasattr(self, '_nickname'):
             self._nickname = self.factory.config.nickname
