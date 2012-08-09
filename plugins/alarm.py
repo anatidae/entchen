@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from bot import BotPlugin
 import datetime
 import math
@@ -22,7 +24,7 @@ def alarmcmd(bot, user, channel, msg):
         if minutes != 1:
             pl = 's'
         m = "Reminding %s in %i minute%s: %s" % (username, minutes, pl, message)
-        bot.msg(channel, m)
+        bot.msg(channel, m.encode('ascii', 'ignore'))
 
 
     def f(username, s):
