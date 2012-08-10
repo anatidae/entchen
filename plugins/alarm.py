@@ -29,7 +29,7 @@ def alarmcmd(bot, user, channel, msg):
 
     def f(username, s):
         m = "%s: --- %s ---" % (username, s)
-        bot.msg(channel, m)
+        bot.msg(channel, m.encode('ascii', 'ignore'))
 
     # FIXME: best way to get the username?
     username = user.split('!')[0]
