@@ -12,6 +12,14 @@ class EntchenConfig(Config):
     ssl = True
     channels = ['#cl-study', '#admin']
 
+class EntchenConfigFreenode(Config):
+    plugins = ['chatter', 'date', 'alarm', 'randomness']
+    nickname = 'entchen'
+    server = 'chat.freenode.net'
+    port = 6697
+    ssl = True
+    channels = ['#kinder']
+
 class TestConfig(EntchenConfig):
     nickname = 'testchen'
     channels = ['#test', '#test2']
