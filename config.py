@@ -13,6 +13,7 @@ class EntchenConfig(Config):
     channels = ['#cl-study', '#admin']
 
 class EntchenConfigFreenode(Config):
+    # don't load all plugins on freenode, until we have some kind of acl
     plugins = ['chatter', 'date', 'alarm', 'randomness']
     nickname = 'entchen'
     server = 'chat.freenode.net'
