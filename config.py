@@ -10,6 +10,7 @@ class EntchenConfig(Config):
     server = '188.40.78.73'
     port = 6668
     ssl = True
+    storage = 'entchen.data'
     channels = ['#cl-study', '#admin']
 
 class TestConfig(EntchenConfig):
@@ -19,5 +20,6 @@ class TestConfig(EntchenConfig):
 class CeciConfig(Config):
     nickname = 'ceci'
     server = 'ceci.dastier.net'
-    channels = ['#ceci']
-    plugins = ['sysinfo']
+    storage = 'ceci.data'
+    channels = ['#test']
+    plugins = ['test']

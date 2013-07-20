@@ -1,10 +1,34 @@
+import sys
+import inspect
+import re
+from contextlib import contextmanager
 # -*- coding: utf-8 -*-
+class ExplicitReference(object):
+    data = None
 
 class BotPlugin(object):
 
     def __init__(self):
         self.factory = None
         self._msghandlers = []
+        frame,filename,line_number,function_name,lines,index = inspect.getouterframes(inspect.currentframe())[1]
+        match = re.search(r'plugins/([^.]*)\.py', filename)
+        if match:
+            self.name = match.groups()[0]
+        else:
+            raise # BotException
+
+    @contextmanager
+    def stored(self, name, default=None):
+        d = ExplicitReference()
+        try:
+            d.data = self.factory.storage.get(self.name, name)
+        except KeyError, e:
+            if default is None:
+                raise
+            d.data = default
+        yield d
+        self.factory.storage.set(self.name, name, d.data)
 
     ## Extenders - add functionality
     def add_any(self, f):
@@ -53,6 +77,10 @@ class BotPlugin(object):
         return wrapped
         
     ## Decorators
+    def init(self, f):
+        f()
+        return f
+
     def any(self, f):
         return self.add_any(f)
             
