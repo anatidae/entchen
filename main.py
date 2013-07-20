@@ -10,6 +10,9 @@ if __name__ == "__main__":
     elif len(sys.argv)>1 and sys.argv[1] == 'ceci':
         from config import CeciConfig
         bot.set_config(CeciConfig())
+    elif len(sys.argv)>1 and sys.argv[1] == 'freenode':
+        from config import EntchenConfigFreenode
+        bot.set_config(EntchenConfigFreenode())
     else:
         from config import EntchenConfig
         bot.set_config(EntchenConfig())
