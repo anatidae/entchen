@@ -40,7 +40,7 @@ class BotPlugin(object):
 
     def add_command(self, head, f):
         def wrapped(bot, user, channel, msg):
-            if isinstance(head, []):
+            if isinstance(head, list):
                 headlist = head
             else:
                 headlist = [head]
