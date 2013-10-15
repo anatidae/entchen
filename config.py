@@ -15,8 +15,8 @@ class EntchenConfig(Config):
 
 class EntchenConfigFreenode(Config):
     # don't load all plugins on freenode, until we have some kind of acl
-    plugins = ['chatter', 'date', 'alarm', 'randomness']
-    nickname = 'entchen'
+    plugins = ['chatter', 'date', 'alarm', 'randomness', 'birthday']
+    nickname = 'kindchen'
     server = 'chat.freenode.net'
     port = 6697
     ssl = True
