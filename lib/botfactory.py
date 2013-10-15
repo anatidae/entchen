@@ -32,7 +32,7 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
             pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
             plugin = getattr(pluginmod, plugin)
         except:
-            e = sys.exc_info()[0]
+            #e = sys.exc_info()[0]
             return traceback.format_exc()
         if isinstance(plugin, BotPlugin):
             if plugin.factory and not override:
