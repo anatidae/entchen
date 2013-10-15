@@ -2,6 +2,7 @@ from bot import BotPlugin
 
 sysinfo = BotPlugin()
 
+
 def parse_meminfo():
     m = {}
     f = open('/proc/meminfo')
@@ -13,6 +14,7 @@ def parse_meminfo():
         m[key.strip()] = value.strip()
     return m
 
+
 @sysinfo.command('mem')
 def meminfo(bot, user, channel, msg):
     meminfo = parse_meminfo()
@@ -21,7 +23,7 @@ def meminfo(bot, user, channel, msg):
     total = int(total)
     free = int(free)
     usedp = float(total-free)/float(total)*100.0
-    if tunit == funit: 
+    if tunit == funit:
         if tunit == "kB":
             bot.msg(channel,
                     "Memory usage: %.2f%% total: %s mB free: %s mB"%

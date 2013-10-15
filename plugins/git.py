@@ -3,11 +3,13 @@ import subprocess
 
 git = BotPlugin()
 
+
 def git_head(folder, branch='master'):
     m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN] -- %%ar" HEAD -n 1' \
                              % (folder, branch),
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
+
 
 @git.command('botversion')
 def say_git_version(bot, user, channel, msg):
@@ -24,23 +26,22 @@ def say_git_head(bot, user, channel, msg):
 
     sp = msg.split()
     branch = 'master'
-    if len(sp)>0:
+    if len(sp) > 0:
         repo = sp[0]
     else:
         repo = ''
-    if len(sp)>1:
+    if len(sp) > 1:
         branch = sp[1]
 
     if repo == 'entchen':
-        m = git_head('/admin/verwaltung/repository/entchen.git/', 
+        m = git_head('/admin/verwaltung/repository/entchen.git/',
                      branch)
     elif repo == 'voliere':
         m = git_head('/admin/verwaltung/repository/verwaltung.git/',
                      branch)
     elif repo == 'issues':
-        m = git_head('/admin/verwaltung/repository/issues.git/', 
+        m = git_head('/admin/verwaltung/repository/issues.git/',
                      branch)
     else:
         m = 'give name of repo (i.e. entchen, voliere) [optional name of branch]'
     bot.msg(channel, m)
-

@@ -5,11 +5,13 @@ import os.path
 
 chatter = BotPlugin()
 
+
 @chatter.any
 def say_voicing(bot, user, channel, msg):
     if bot.nickname in msg and not msg.startswith(bot.nickname):
-        l = ["quak","quak","schnatter","quak quak"]
+        l = ["quak", "quak", "schnatter", "quak quak"]
         bot.msg(channel, random.choice(l))
+
 
 def get_data_from_file(fn=None):
     """ Read data from file.
@@ -21,14 +23,15 @@ def get_data_from_file(fn=None):
     if not fn:
         fn = os.path.join(os.path.dirname(__file__),
                           'chatter.data')
-    
+
     fp = open(fn)
     for line in fp.readlines():
         x = line.split('=')
-        if len(x)>1:
+        if len(x) > 1:
             d[x[0]] = x[1].strip()
     fp.close()
     return d
+
 
 @chatter.any
 def say_stuff(bot, user, channel, msg):

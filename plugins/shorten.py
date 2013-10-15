@@ -4,6 +4,7 @@ import json
 
 shorten = BotPlugin()
 
+
 def get_google_api_key(fn='~/.config/.google-api-key'):
     """ Reads the google api key from a file.
     Put only the key inside the file. Nothing else.
@@ -36,7 +37,7 @@ def shortenit(longurl):
     url = 'https://www.googleapis.com/urlshortener/v1/url'
     if not longurl.startswith('http'):
         longurl = 'http://%s' % longurl
-    post = {'longUrl': longurl, 
+    post = {'longUrl': longurl,
             'key': key}
 
     req = urllib2.Request(url, json.dumps(post))

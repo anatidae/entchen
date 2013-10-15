@@ -66,7 +66,7 @@ class IRCBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
-        
+
         if msg.startswith('!reload'):
             args = msg.split()[1:]
             if len(args) > 0:

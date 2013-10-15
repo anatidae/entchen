@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 import sys
 import inspect
 import re
 from contextlib import contextmanager
-# -*- coding: utf-8 -*-
+
+
 class ExplicitReference(object):
     data = None
+
 
 class BotPlugin(object):
 
@@ -16,7 +19,7 @@ class BotPlugin(object):
         if match:
             self.name = match.groups()[0]
         else:
-            raise # BotException
+            raise    # BotException
 
     @contextmanager
     def stored(self, name, default=None):
@@ -37,7 +40,7 @@ class BotPlugin(object):
 
     def add_command(self, head, f):
         def wrapped(bot, user, channel, msg):
-            if type(head) == type([]):
+            if isinstance(head, []):
                 headlist = head
             else:
                 headlist = [head]
@@ -56,7 +59,7 @@ class BotPlugin(object):
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
         self._msghandlers.append(wrapped)
-        return wrapped            
+        return wrapped
 
     def add_startswith(self, head, f):
         def wrapped(bot, user, channel, msg):
@@ -65,7 +68,7 @@ class BotPlugin(object):
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
         self._msghandlers.append(wrapped)
-        return wrapped            
+        return wrapped
 
     def add_contains(self, chunk, f):
         def wrapped(bot, user, channel, msg):
@@ -75,7 +78,7 @@ class BotPlugin(object):
         wrapped.__doc__ = f.__doc__
         self._msghandlers.append(wrapped)
         return wrapped
-        
+
     ## Decorators
     def init(self, f):
         f()
@@ -83,7 +86,7 @@ class BotPlugin(object):
 
     def any(self, f):
         return self.add_any(f)
-            
+
     def command(self, head):
         def wrap(f):
             return self.add_command(head, f)
@@ -103,4 +106,3 @@ class BotPlugin(object):
     def privmsg(self, bot, user, channel, msg):
         for func in self._msghandlers:
             func(bot, user, channel, msg)
-

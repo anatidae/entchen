@@ -1,5 +1,6 @@
 class Config:
-    plugins = ['chatter', 'date', 'git', 'sysinfo', 'alarm', 'gw', 'randomness']
+    plugins = ['chatter', 'date', 'git', 'sysinfo', 'alarm', 'gw',
+               'randomness', 'birthday']
     port = 6667
     ssl = False
     commandchars = "!" # values like "!." mean either "!" or "."
@@ -25,6 +26,7 @@ class EntchenConfigFreenode(Config):
 class TestConfig(EntchenConfig):
     nickname = 'testchen'
     channels = ['#test', '#test2']
+    storage = 'test.data'
 
 class CeciConfig(Config):
     nickname = 'ceci'
