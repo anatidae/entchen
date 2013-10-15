@@ -20,9 +20,9 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
     def _init_plugins(self):
         self._plugins = {}
         for plugin in self.config.plugins:
-            self.add_plugin(plugin)
-        
-    def add_plugin(self, plugin, override = False):
+            self.add_plugin(plugin, reraise=True)
+
+    def add_plugin(self, plugin, override = False, reraise=False):
         name = plugin
         if name in self._plugins and not override:
             print "Plugin named %s already loaded"%name
@@ -33,6 +33,8 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
             plugin = getattr(pluginmod, plugin)
         except:
             #e = sys.exc_info()[0]
+            if reraise:
+                raise
             return traceback.format_exc()
         if isinstance(plugin, BotPlugin):
             if plugin.factory and not override:
@@ -41,7 +43,7 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
             plugin.factory = self
             self._plugins[name] = plugin
         return ""
-            
+
     def del_plugin(self, plugin):
         if plugin in self._plugins:
             del self._plugins[plugin]
@@ -66,4 +68,3 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
 
     def clientConnectionFailed(self, connector, reason):
         print "Could not connect: %s" % (reason,)
-
