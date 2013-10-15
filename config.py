@@ -19,6 +19,7 @@ class EntchenConfigFreenode(Config):
     plugins = ['chatter', 'date', 'alarm', 'randomness', 'birthday']
     nickname = 'kindchen'
     server = 'chat.freenode.net'
+    storage = 'kindchen.data'
     port = 6697
     ssl = True
     channels = ['#kinder']
