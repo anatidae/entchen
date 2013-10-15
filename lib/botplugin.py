@@ -123,24 +123,30 @@ class BotPlugin(object):
         return f
 
     def any(self, f):
+        # use this decorator if you want to do something with ALL chat lines. Example: Logging
         return self.add_any(f)
 
     def command(self, head):
+        # use to define a command. commands either start with a commandchar (see config)
+        # or with the name of the bot
         def wrap(f):
             return self.add_command(head, f)
         return wrap
 
     def startswith(self, head):
+        # gets called for any line starting with head.
         def wrap(f):
             return self.add_startswith(head, f)
         return wrap
 
     def contains(self, chunk):
+        # gets called for any line containing chunk
         def wrap(f):
             return self.add_contains(chunk, f)
         return wrap
 
     def periodic(self, seconds):
+        # gets called every x seconds, float should be possible
         def wrap(f):
             lc = LoopingCall(f)
             lc.start(seconds)
@@ -149,5 +155,7 @@ class BotPlugin(object):
 
     ## helper methods
     def privmsg(self, bot, user, channel, msg):
+        # don't call this in plugins.
+        # It is used by the bot mainloop to determine if the message has any associated handlers
         for func in self._msghandlers:
             func(bot, user, channel, msg)
