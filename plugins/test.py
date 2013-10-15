@@ -5,11 +5,17 @@ test = BotPlugin()
 
 @test.init
 def init():
-    print "hello"
+    print "init"
+    test.stored.set_default("abc", 0)
 
 
 @test.command('test')
 def say_something(bot, user, channel, msg):
-    with test.stored("abc", 0) as x:
+    print "test"
+    with test.stored("abc") as x:
         bot.msg(channel, x.data)
         x.data += 1
+
+# @test.periodic(1)
+# def x():
+#     print "a"

@@ -12,7 +12,7 @@ def alarmcmd(bot, user, channel, msg):
     """
 
     # TODOs:
-    # - save all reminders in the factory for a !showalarms command
+    # - save all reminders in the plugin for a !showalarms command
     # - maybe: add !delalarm <alarmid>
 
     def showhelp():
@@ -69,5 +69,5 @@ def alarmcmd(bot, user, channel, msg):
     if not message:
         message = " ".join(sp[1:])
 
-    bot.factory.reactor.callLater(seconds, f, username, message)
+    alarm.callLater(seconds, f, username, message)
     startmsg(username, seconds)

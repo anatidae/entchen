@@ -3,17 +3,52 @@ import sys
 import inspect
 import re
 from contextlib import contextmanager
-
-
+from twisted.internet.task import LoopingCall
+# -*- coding: utf-8 -*-
 class ExplicitReference(object):
     data = None
 
+class StorageProxy(object):
+
+    _default = {}
+
+    def __init__(self, plugin):
+        self.plugin = plugin
+
+    @contextmanager
+    def __call__(self, name, default=None):
+        d = ExplicitReference()
+        try:
+            d.data = self.plugin.factory.storage.get(self.plugin.name, name)
+        except KeyError, e:
+            if default is None:
+                print "no default param"
+                print self._default.keys()
+                print name
+                if not name in self._default.keys():
+                    print "no default value"
+                    raise
+                print "default value", self._default[name]
+                d.data = self._default[name]
+                print "inside", d.data
+            else:
+                d.data = default
+        print "before", d.data
+        yield d
+        print "after", d.data
+        self.plugin.factory.storage.set(self.plugin.name, name, d.data)
+
+    def set_default(self, name, default):
+        self._default[name] = default
+        print default
 
 class BotPlugin(object):
 
     def __init__(self):
         self.factory = None
+        self.stored = StorageProxy(self)
         self._msghandlers = []
+        self._periodic = []
         frame,filename,line_number,function_name,lines,index = inspect.getouterframes(inspect.currentframe())[1]
         match = re.search(r'plugins/([^.]*)\.py', filename)
         if match:
@@ -79,6 +114,9 @@ class BotPlugin(object):
         self._msghandlers.append(wrapped)
         return wrapped
 
+    def callLater(seconds, function, *args, **kwargs):
+        factory.reactor.callLater(seconds, function, *args, **kwargs)
+
     ## Decorators
     def init(self, f):
         f()
@@ -100,6 +138,13 @@ class BotPlugin(object):
     def contains(self, chunk):
         def wrap(f):
             return self.add_contains(chunk, f)
+        return wrap
+
+    def periodic(self, seconds):
+        def wrap(f):
+            lc = LoopingCall(f)
+            lc.start(seconds)
+            self._periodic.append(lc)
         return wrap
 
     ## helper methods
