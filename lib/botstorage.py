@@ -1,6 +1,5 @@
-import sys
-
 import shelve
+
 
 class BotStorage:
     _data = None
@@ -17,6 +16,6 @@ class BotStorage:
     def set(self, category, key, value):
         self._data[self._key(category, key)] = value
         self._data.sync()
-    
+
     def delete(self, category, key):
         del self._data[self._key(category, key)]
