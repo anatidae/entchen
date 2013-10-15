@@ -10,8 +10,16 @@ def git_head(folder, branch='master'):
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
 
+@git.command('pull')
+def git_pull(bot, user, channel, msg):
+    b = subprocess.Popen('cd ~/entchen; git pull',
+                         shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE).stdout
+    m = b.read().strip()
+    bot.msg(channel, m)
 
-@git.command('botversion')
+
+#@git.command('botversion')
 def say_git_version(bot, user, channel, msg):
     b = subprocess.Popen('git log --pretty=format:"%h -- %ar" HEAD -n 1',
                          shell=True, stdout=subprocess.PIPE).stdout
@@ -19,7 +27,7 @@ def say_git_version(bot, user, channel, msg):
     bot.msg(channel, m)
 
 
-@git.command('head')
+#@git.command('head')
 def say_git_head(bot, user, channel, msg):
     # TODO: check if branch exists
     # TODO: cleanup
