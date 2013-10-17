@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+try:
+    import geventreactor
+    geventreactor.install()
+    print "gevent reactor found!"
+except ImportError:
+    print "no gevent :( (pip install geventreactor)"
+    pass
+
 from lib.botplugin import BotPlugin
 from lib.ircbot import IRCBot
 from lib.botfactory import BotFactory
