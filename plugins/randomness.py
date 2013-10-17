@@ -18,47 +18,6 @@ def muenzecmd(bot, user, channel, msg):
     bot.msg(channel, random.choice(('Kopf', 'Zahl')))
 
 
-def rollparse(msg):
-    """
-    Input Examples:
-     * 6
-     * 2d6
-     * 2w6
-     * d6
-     """
-    r = None
-    num = 1
-    if msg.isdigit():
-        r = range(1, int(msg)+1)
-    else:
-        rx = re.split(r'(\d*)[dw](\d+)', msg)
-        if len(rx) > 2:
-            if len(rx[1]):
-                num = int(rx[1])
-            r = range(1, int(rx[2]) + 1)
-    if r:
-        s = ""
-        for _ in range(num):
-            s += "%d " % random.choice(r)
-        return s
-    else:
-        return "!roll <sides>"
-
-
-@randomness.command(['dice', 'w6'])
-def dicecmd(bot, user, channel, msg):
-    bot.msg(channel, rollparse('6'))
-
-
-@randomness.command(['roll', 'toss'])
-def rollcmd(bot, user, channel, msg):
-    """ Throw a dice.
-
-    Usage: !roll <sides>
-    """
-    bot.msg(channel, rollparse(msg.split()[0]))
-
-
 @randomness.command('frage')
 def magiccmd(bot, user, channel, msg):
     choices = [
