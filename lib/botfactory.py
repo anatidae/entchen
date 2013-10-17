@@ -3,7 +3,7 @@
 from twisted.internet import protocol
 from ircbot import IRCBot
 from botplugin import BotPlugin
-from botstorage import BotStorage
+from botstorage import BotStorage, BotConfigWrapper
 import sys
 import traceback
 import imp
@@ -12,9 +12,9 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
     protocol = IRCBot
 
     def __init__(self, config, reactor):
-        self.config = config
+        self.storage = BotStorage(config.storage)
+        self.config = BotConfigWrapper(self.storage, config)
         self.reactor = reactor
-        self.storage = BotStorage(self.config)
         self._init_plugins()
 
     def _init_plugins(self):
