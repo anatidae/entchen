@@ -114,8 +114,8 @@ class BotPlugin(object):
         self._msghandlers.append(wrapped)
         return wrapped
 
-    def callLater(seconds, function, *args, **kwargs):
-        factory.reactor.callLater(seconds, function, *args, **kwargs)
+    def callLater(self, seconds, function, *args, **kwargs):
+        self.factory.reactor.callLater(seconds, function, *args, **kwargs)
 
     ## Decorators
     def init(self, f):
