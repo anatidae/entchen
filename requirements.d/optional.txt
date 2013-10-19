@@ -2,3 +2,5 @@
 plex
 # currently no benefits, but I plan on using this soon
 geventreactor
+# for testing
+pytest
