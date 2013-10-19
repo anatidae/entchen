@@ -126,7 +126,7 @@ def privmsg(bot, user, channel, msg):
     if msg.startswith('!plugins'):
         args = msg.split()[1:]
         if len(args) == 0:
-            keys = _plugins.keys()
+            keys = sorted(_plugins.keys())
 
             bot.msg(channel,
                     'Plugins loaded: %s'%
