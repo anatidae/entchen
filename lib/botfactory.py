@@ -6,7 +6,7 @@ from botplugin import BotPlugin
 from botstorage import BotStorage, BotConfigWrapper
 import sys
 import traceback
-import imp
+import importlib
 
 class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
     protocol = IRCBot
@@ -28,8 +28,7 @@ class BotFactory(protocol.ClientFactory): #REFACTOR needs a generic name
             print "Plugin named %s already loaded"%name
             return
         try:
-            plugins = imp.load_module('plugins', *imp.find_module('plugins'))
-            pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
+            pluginmod = importlib.import_module('plugins.%s' % (name, ))
             plugin = getattr(pluginmod, plugin)
         except:
             #e = sys.exc_info()[0]
