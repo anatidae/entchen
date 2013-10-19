@@ -66,10 +66,25 @@ def reload_self(bot, user, channel):
     global _user
     global _factory
 
+    # set variables that we need after the reload
     _bot = bot
     _user = user
     _channel = channel
     reload(_factory.plugins)
+
+if _loaded:  # only entered after reload
+    _bot.msg(_channel, 'reloading all plugins')
+    (badplugs, errors) = reload_plugins(_loaded)
+    if errors:
+        _bot.msg(channel,
+                "failed to reload plugin(s) %s; see query"%
+                ', '.join(badplugs))
+        _bot.msg(_user, errors)
+    # we don't want those temporary variables anymore
+    del _channel
+    del _user
+    del _bot
+del _loaded
 
 def privmsg(bot, user, channel, msg):
     global _plugins
@@ -114,7 +129,6 @@ def privmsg(bot, user, channel, msg):
         bot.msg(channel,
                  'Plugins loaded: %s'%
                  (' '.join(keys),))
-        #            [plugin for plugin in
     if msg.startswith('!join'):
         args = msg.split()[1:]
         if len(args) > 0:
@@ -138,15 +152,3 @@ def _init_plugins(factory):
 
     for plugin in _factory.config.plugins:
         add_plugin(plugin, reraise=True)
-
-if _loaded:
-    _bot.msg(_channel, 'reloading all plugins')
-    (badplugs, errors) = reload_plugins(_loaded)
-    if errors:
-        _bot.msg(channel,
-                "failed to reload plugin(s) %s; see query"%
-                ', '.join(badplugs))
-        bot.msg(_user, errors)
-    del _channel
-    del _user
-    del _bot
