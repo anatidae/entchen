@@ -1,6 +1,7 @@
 import traceback
 from botplugin import BotPlugin
-import importlib
+#import importlib
+import imp
 
 _loaded = []
 try:
@@ -22,8 +23,11 @@ def add_plugin(plugin, override = False, reraise=False):
         print "Plugin named %s already loaded"%name
         return
     try:
-        pluginmod = importlib.import_module('plugins.%s' % (name, ))
+        plugins = imp.load_module('plugins', *imp.find_module('plugins'))
+        pluginmod = imp.load_module(plugin, *imp.find_module(plugin, plugins.__path__))
         plugin = getattr(pluginmod, plugin)
+        # pluginmod = importlib.import_module('plugins.%s' % (name, ))
+        # plugin = getattr(pluginmod, plugin)
     except:
         #e = sys.exc_info()[0]
         if reraise:
