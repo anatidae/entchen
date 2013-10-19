@@ -47,9 +47,11 @@ class BotConfigWrapper(object):
         raise AttributeError
 
     def __setattr__(self, item, value):
-        if not self.__dict__.has_key('__initialised'):  # this test allows attributes to be set in the __init__ method
+        # this test allows attributes to be set in the __init__ method
+        if not self.__dict__.has_key('_BotConfigWrapper__initialised'):
             return object.__setattr__(self, item, value)
-        elif self.__dict__.has_key(item):               # any normal attributes are handled normally
+        # any normal attributes are handled normally
+        elif self.__dict__.has_key(item):
             object.__setattr__(self, item, value)
         else:
-            self.storage.set(self.prefix, attr, value)
+            self.storage.set(self.prefix, item, value)
