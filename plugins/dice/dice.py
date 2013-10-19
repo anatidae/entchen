@@ -3,10 +3,14 @@ I wrote this when I was bored after too many compiler design lessons
 
 the plugin part is in __init__.py ;)
 """
-from plex import *
+from plex import (
+    Scanner, Range, Str, Rep, NoCase, Any, Lexicon, State, Rep1, errors,
+    IGNORE, Eol
+)
 from StringIO import StringIO
 import random
 import sys
+
 
 """
 2d6+10
@@ -15,6 +19,7 @@ import sys
 
 ( 3 + 5 ) + 10 = 18
 """
+
 
 class DiceScanner(Scanner):
 
@@ -67,32 +72,33 @@ class DiceScanner(Scanner):
         self.produce('output', self.stack[-1])
 
     lexicon = Lexicon([
+        (dice, scan_dice),
+        (number, scan_number),
+        (plusminus, scan_mod),
+        (Rep1(Any(" ")), IGNORE),
+        State('start', [
             (dice, scan_dice),
             (number, scan_number),
-            (plusminus, scan_mod),
             (Rep1(Any(" ")), IGNORE),
-            State('start', [
-                    (dice, scan_dice),
-                    (number, scan_number),
-                    (Rep1(Any(" ")), IGNORE),
-                    ]),
-            State('gotnum', [
-                    (dice, scan_dice2),
-                    (Rep1(Any(" ")), IGNORE),
-                    (plusminus, scan_mod2),
-                    (Eol, handle_endline),
-                    ]),
-            State('afterdie', [
-                    (number, scan_number2),
-                    (Rep1(Any(" ")), IGNORE),
-                    ]),
-            ])
+        ]),
+        State('gotnum', [
+            (dice, scan_dice2),
+            (Rep1(Any(" ")), IGNORE),
+            (plusminus, scan_mod2),
+            (Eol, handle_endline),
+        ]),
+        State('afterdie', [
+            (number, scan_number2),
+            (Rep1(Any(" ")), IGNORE),
+        ]),
+    ])
 
     def __init__(self, f):
         Scanner.__init__(self, self.lexicon, f)
         self.stack = []
         self.begin('start')
         self.result = 0
+
 
 def roll(line):
     result = ""
