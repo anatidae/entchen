@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bot import BotPlugin
-import copy
+#import copy
 import random
-import os.path
-import re
+#import os.path
+#import re
 
 randomness = BotPlugin()
 
@@ -29,7 +29,7 @@ def magiccmd(bot, user, channel, msg):
         "Welch schaendlicher Gedanke!",
         "Das wuerde dem Meister gefallen",
         "Mitnichten wuerde ich das verneinen",
-        ]
+    ]
     bot.msg(channel, random.choice(choices))
 
 

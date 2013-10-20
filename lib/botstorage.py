@@ -28,6 +28,7 @@ class BotStorage:
     def delete(self, category, key):
         del self._data[self._key(category, key)]
 
+
 class BotConfigWrapper(object):
     prefix = 'core:config'
 
@@ -48,10 +49,10 @@ class BotConfigWrapper(object):
 
     def __setattr__(self, item, value):
         # this test allows attributes to be set in the __init__ method
-        if not self.__dict__.has_key('_BotConfigWrapper__initialised'):
+        if not '_BotConfigWrapper__initialised' in self.__dict__:
             return object.__setattr__(self, item, value)
         # any normal attributes are handled normally
-        elif self.__dict__.has_key(item):
+        elif item in self.__dict__:
             object.__setattr__(self, item, value)
         else:
             self.storage.set(self.prefix, item, value)

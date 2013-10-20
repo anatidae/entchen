@@ -5,10 +5,12 @@ git = BotPlugin()
 
 
 def git_head(folder, branch='master'):
-    m = subprocess.Popen('cd %s; git log %s --pretty=format:"%%h >>>%%s<<< [%%aN] -- %%ar" HEAD -n 1' \
-                             % (folder, branch),
+    m = subprocess.Popen('cd %s; git log %s --pretty=format:'
+                         '"%%h >>>%%s<<< [%%aN] -- %%ar" HEAD -n 1' % (folder,
+                                                                       branch),
                          shell=True, stdout=subprocess.PIPE).stdout
     return m.read()
+
 
 @git.command('pull')
 def git_pull(bot, user, channel, msg):
@@ -51,5 +53,7 @@ def say_git_head(bot, user, channel, msg):
         m = git_head('/admin/verwaltung/repository/issues.git/',
                      branch)
     else:
-        m = 'give name of repo (i.e. entchen, voliere) [optional name of branch]'
+        m = 'give name of repo ' \
+            '(i.e. entchen, voliere)' \
+            '[optional name of branch]'
     bot.msg(channel, m)

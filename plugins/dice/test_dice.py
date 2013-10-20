@@ -1,4 +1,4 @@
-import pytest
+#import pytest
 from dice import roll
 import re
 

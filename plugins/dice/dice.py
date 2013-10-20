@@ -9,8 +9,7 @@ from plex import (
 )
 from StringIO import StringIO
 import random
-import sys
-
+#import sys
 
 """
 2d6+10
@@ -42,7 +41,7 @@ class DiceScanner(Scanner):
             number = random.randint(1, d)
             result += number
             self.produce('output', number)
-            if x+1 < self.multiplier:
+            if x + 1 < self.multiplier:
                 self.produce('output', '+')
         self.produce('output', ')')
         self.stack.append(result)
@@ -107,7 +106,7 @@ def roll(line):
     while 1:
         try:
             token, text = scanner.read()
-        except errors.UnrecognizedInput, e:
+        except errors.UnrecognizedInput:
             result += "?"
             success = False
             break
@@ -119,11 +118,11 @@ def roll(line):
     if success:
         stack = scanner.stack
         res = stack[0]
-        for x in xrange(len(stack)/2):
-            i = (x+1)*2
-            if stack[i-1] == '+':
+        for x in xrange(len(stack) / 2):
+            i = (x + 1) * 2
+            if stack[i - 1] == '+':
                 res += stack[i]
-            elif stack[i-1] == '-':
+            elif stack[i - 1] == '-':
                 res -= stack[i]
         result += "= " + unicode(res)
     return result

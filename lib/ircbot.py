@@ -3,6 +3,7 @@
 from twisted.words.protocols import irc
 from twisted.internet import defer
 
+
 class IRCBot(irc.IRCClient):
 
     # get names of users in channel
@@ -63,6 +64,9 @@ class IRCBot(irc.IRCClient):
 
     def msg(self, user, message, length=None):
         irc.IRCClient.msg(self, user, str(message), length)
+
+    def action(self, user, channel, msg):
+        self.factory.plugins.action(self, user, channel, msg)
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""

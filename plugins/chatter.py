@@ -1,5 +1,5 @@
 from bot import BotPlugin
-import copy
+#import copy
 import random
 import os.path
 
