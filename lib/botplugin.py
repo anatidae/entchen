@@ -137,7 +137,7 @@ class BotPlugin(object):
                 elif msg.startswith(bot.nickname):
                     msg1 = msg[len(bot.nickname):].decode('utf-8')
                     msg1 = msg1.lstrip(self.factory.config.separators)
-                    if msg1.lower().startswith(head.lower()):
+                    if msg1.lower().startswith(head_elem.lower()):
                         msg1 = msg1[len(head):]
                         return f(bot, user, channel, msg1)
         wrapped.__name__ = f.__name__
