@@ -12,6 +12,10 @@ from lib.botplugin import BotPlugin
 from lib.ircbot import IRCBot
 from lib.botfactory import BotFactory
 
+#dear pep8: shut up. Love, developer.
+BotPlugin
+IRCBot
+
 
 class Bot:
     def __init__(self, config=False):
