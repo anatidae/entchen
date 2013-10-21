@@ -19,31 +19,28 @@ class StorageProxy(object):
         self.plugin = plugin
 
     @contextmanager
-    def __call__(self, name, default=None):
+    def __call__(self, name, ref=False, default=None):
         d = ExplicitReference()
         try:
             d.data = self.plugin.factory.storage.get(self.plugin.name, name)
         except KeyError:
             if default is None:
                 print "no default param"
-                print self._default.keys()
-                print name
                 if not name in self._default.keys():
                     print "no default value"
                     raise
-                print "default value", self._default[name]
                 d.data = self._default[name]
-                print "inside", d.data
             else:
                 d.data = default
-        print "before", d.data
-        yield d
-        print "after", d.data
+        if ref:
+            yield d.data
+        else:
+            yield d
         self.plugin.factory.storage.set(self.plugin.name, name, d.data)
 
-    def set_default(self, name, default):
+    def setdefault(self, name, default):
+        self.plugin.factory.storage.setdefault(self.plugin.name, name, default)
         self._default[name] = default
-        print default
 
 
 class BotPlugin(object):
@@ -51,9 +48,10 @@ class BotPlugin(object):
     def __init__(self, core=False):
         self.factory = None
         self.stored = StorageProxy(self)
-        self._msghandlers = {}
-        self._actionhandlers = {}
-        self._inithandlers = []
+        self._handlers_msg = {}
+        self._handlers_action = {}
+        self._handlers_joined = {}
+        self._handlers_init = []
         self._periodic = []
         (frame,
          filename,
@@ -73,7 +71,7 @@ class BotPlugin(object):
     def bindto(self, factory):
         if self.factory is None:
             self.factory = factory
-            for func in self._inithandlers:
+            for func in self._handlers_init:
                 func()
         else:
             raise
@@ -91,8 +89,10 @@ class BotPlugin(object):
         self.factory.storage.set(self.name, name, d.data)
 
     @contextmanager
-    def stored_dict(self, name, default=None):
-        assert default is None or isinstance(default, dict)
+    def stored_ref(self, name, default=None):
+        assert default is None \
+            or isinstance(default, dict) \
+            or isinstance(default, list)
         if self.factory.storage.exists(self.name, name):
             d = self.factory.storage.get(self.name, name)
         elif default is None:
@@ -110,9 +110,17 @@ class BotPlugin(object):
 
     ## Extenders - add functionality
     def add_any(self, f):
-        self._msghandlers[f.__name__] = f
-        self._actionhandlers[f.__name__] = f
+        self._handlers_msg[f.__name__] = f
+        self._handlers_action[f.__name__] = f
         return f
+
+    def add_joined(self, f):
+        def wrapped(bot, user, channel):
+            return f(bot, user, channel)
+        wrapped.__name__ = f.__name__
+        wrapped.__doc__ = f.__doc__
+        self._handlers_joined[wrapped.__name__] = wrapped
+        return wrapped
 
     def add_command(self, head, f):
         def wrapped(bot, user, channel, msg):
@@ -134,7 +142,7 @@ class BotPlugin(object):
                         return f(bot, user, channel, msg1)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
-        self._msghandlers[wrapped.__name__] = wrapped
+        self._handlers_msg[wrapped.__name__] = wrapped
         return wrapped
 
     def add_startswith(self, head, f):
@@ -143,7 +151,7 @@ class BotPlugin(object):
                 return f(bot, user, channel, msg)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
-        self._msghandlers[wrapped.__name__] = wrapped
+        self._handlers_msg[wrapped.__name__] = wrapped
         return wrapped
 
     def add_contains(self, chunk, f):
@@ -152,7 +160,7 @@ class BotPlugin(object):
                 return f(bot, user, channel, msg)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
-        self._msghandlers[wrapped.__name__] = wrapped
+        self._handlers_msg[wrapped.__name__] = wrapped
         return wrapped
 
     def callLater(self, seconds, function, *args, **kwargs):
@@ -160,13 +168,20 @@ class BotPlugin(object):
 
     ## Decorators
     def init(self, f):
-        self._inithandlers.append(f)
+        self._handlers_init.append(f)
         return f
 
     def any(self, f):
         # use this decorator if you want to do something with ALL chat lines.
         # Example: Logging
         return self.add_any(f)
+
+    def joined(self):
+        # use this decorator if you want to be notified
+        # when you joined a new channel
+        def wrap(f):
+            return self.add_joined(f)
+        return wrap
 
     def command(self, head):
         # use to define a command. commands either start with a commandchar
@@ -199,10 +214,10 @@ class BotPlugin(object):
     def permission(self, level):
         def wrap(f):
             def setdefault():
-                with self.stored_dict("__permissions__", default={}) as perms:
+                with self.stored_ref("__permissions__", default={}) as perms:
                     if not f.__name__ in perms:
                         perms[f.__name__] = level
-            self._inithandlers.append(setdefault)
+            self._handlers_init.append(setdefault)
             return f
         return wrap
 
@@ -210,10 +225,14 @@ class BotPlugin(object):
     # don't call these in plugins.
     # they are used by the bot mainloop to determine
     # if the message has any associated handlers
-    def privmsg(self, bot, user, channel, msg):
-        for func in self._msghandlers.values():
+    def privmsghandler(self, bot, user, channel, msg):
+        for func in self._handlers_msg.values():
             func(bot, user, channel, msg)
 
-    def action(self, bot, user, channel, msg):
-        for func in self._actionhandlers.values():
+    def actionhandler(self, bot, user, channel, msg):
+        for func in self._handlers_action.values():
             func(bot, user, channel, msg)
+
+    def joinedhandler(self, bot, user, channel):
+        for func in self._handlers_joined.values():
+            func(bot, user, channel)

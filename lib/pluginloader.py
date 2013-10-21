@@ -160,12 +160,23 @@ def privmsg(bot, user, channel, msg):
             bot.part(channel)
     else:
         for plugin in _plugins.values():
-            plugin.privmsg(bot, user, channel, msg)
+            plugin.privmsghandler(bot, user, channel, msg)
 
 
 def action(bot, user, channel, msg):
     for plugin in _plugins.values():
-        plugin.action(bot, user, channel, msg)
+        plugin.actionhandler(bot, user, channel, msg)
+
+
+def joined(bot, channel):
+    user = bot.nickname
+    for plugin in _plugins.values():
+        plugin.joinedhandler(bot, user, channel)
+
+
+def userJoined(bot, user, channel):
+    for plugin in _plugins.values():
+        plugin.joinedhandler(bot, user, channel)
 
 
 def _init_plugins(factory):
