@@ -111,8 +111,11 @@ def privmsg(bot, user, channel, msg):
                     bot.msg(channel, 'error loading %s, see query' % arg)
                     bot.msg(user, error)
         else:
-            bot.msg(channel, 'reloading plugin loader')
-            reload_self(bot, user, channel)
+            # there's a bug that breaks storage when reloading the loader.
+            # will fix soon
+            bot.msg(channel, 'temporarily disabled')
+            #bot.msg(channel, 'reloading plugin loader')
+            #reload_self(bot, user, channel)
         return
     elif msg.startswith('!load'):
         args = msg.split()[1:]
