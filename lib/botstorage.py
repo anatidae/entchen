@@ -42,6 +42,11 @@ class BotConfigWrapper(object):
             storage.setdefault(self.prefix, key, getattr(config, key))
         self.__initialised = True
 
+    def __hasattr__(self, attr):
+        if self.storage.exists(self.prefix, attr):
+            return True
+        return False
+
     def __getattr__(self, attr):
         if self.storage.exists(self.prefix, attr):
             return self.storage.get(self.prefix, attr)

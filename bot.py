@@ -11,10 +11,10 @@
 from lib.botplugin import BotPlugin
 from lib.ircbot import IRCBot
 from lib.botfactory import BotFactory
+import logging
 
-#dear pep8: shut up. Love, developer.
-BotPlugin
-IRCBot
+
+logging.basicConfig()
 
 
 class Bot:
@@ -35,6 +35,8 @@ class Bot:
 
     def run(self):
         if self.config and self.factory and self.reactor:
+            from twisted.python import log
+            from raven.handlers.logging import SentryHandler
             if self.config.ssl:
                 from twisted.internet import ssl
                 self.reactor.connectSSL(self.config.server,
@@ -45,6 +47,12 @@ class Bot:
                 self.reactor.connectTCP(self.config.server,
                                         self.config.port,
                                         self.factory)
+            if hasattr(self.config, 'sentry_dsn'):
+                self.sentry = SentryHandler(self.config.sentry_dsn)
+                l = logging.getLogger('twisted')
+                l.addHandler(self.sentry)
+                self.observer = log.PythonLoggingObserver()
+                self.observer.start()
             self.reactor.run()
 
 bot = Bot()

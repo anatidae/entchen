@@ -3,6 +3,8 @@
 from bot import BotPlugin
 import datetime
 import math
+from twisted.python import log
+import logging
 
 alarm = BotPlugin()
 
