@@ -3,8 +3,9 @@ class Config:
                'randomness', 'birthday']
     port = 6667
     ssl = False
-    commandchars = "!" # values like "!." mean either "!" or "."
-    separators = ",:; " # for "entchen, join #test"
+    commandchars = "!"   # values like "!." mean either "!" or "."
+    separators = ",:; "  # for "entchen, join #test"
+
 
 class EntchenConfig(Config):
     nickname = 'entchen'
@@ -13,6 +14,7 @@ class EntchenConfig(Config):
     ssl = True
     storage = 'entchen.data'
     channels = ['#cl-study', '#admin']
+
 
 class EntchenConfigFreenode(Config):
     # don't load all plugins on freenode, until we have some kind of acl
@@ -24,10 +26,12 @@ class EntchenConfigFreenode(Config):
     ssl = True
     channels = ['#kinder']
 
+
 class TestConfig(EntchenConfig):
     nickname = 'testchen'
     channels = ['#test', '#test2']
     storage = 'test.data'
+
 
 class CeciConfig(Config):
     nickname = 'ceci'

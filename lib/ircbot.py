@@ -3,6 +3,7 @@
 from twisted.words.protocols import irc
 from twisted.internet import defer
 
+
 class IRCBot(irc.IRCClient):
 
     # get names of users in channel
@@ -50,6 +51,10 @@ class IRCBot(irc.IRCClient):
         return self._nickname
     nickname = property(_get_nickname)
 
+    def msg(self, user, message, length=None):
+        irc.IRCClient.msg(self, user, str(message), length)
+
+    ## Listeners - these get called by the bot when an event happens
     def signedOn(self):
         print "Signed on as %s." % (self.nickname,)
         for channel in self.factory.config.channels:
@@ -57,12 +62,16 @@ class IRCBot(irc.IRCClient):
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
+        self.factory.plugins.joined(self, channel)
+
+    def userJoined(self, user, channel):
+        self.factory.plugins.userJoined(self, user, channel)
 
     def nickChanged(self, nick):
         self._nickname = nick
 
-    def msg(self, user, message, length=None):
-        irc.IRCClient.msg(self, user, str(message), length)
+    def action(self, user, channel, msg):
+        self.factory.plugins.action(self, user, channel, msg)
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""

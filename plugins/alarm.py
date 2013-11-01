@@ -6,6 +6,7 @@ import math
 
 alarm = BotPlugin()
 
+
 @alarm.command('alarm')
 def alarmcmd(bot, user, channel, msg):
     """ alarm is the German name for remind.
@@ -23,9 +24,11 @@ def alarmcmd(bot, user, channel, msg):
         pl = ''
         if minutes != 1:
             pl = 's'
-        m = "Reminding %s in %i minute%s: %s" % (username, minutes, pl, message)
+        m = "Reminding %s in %i minute%s: %s" % (username,
+                                                 minutes,
+                                                 pl,
+                                                 message)
         bot.msg(channel, m.encode('ascii', 'ignore'))
-
 
     def f(username, s):
         m = "%s: --- %s ---" % (username, s)
@@ -64,7 +67,7 @@ def alarmcmd(bot, user, channel, msg):
             x = datetime.datetime(now.year, now.month, now.day,
                                   tm[0], tm[1])
             # calculate datetimedelta and save difference in seconds
-            seconds = (x-now).seconds
+            seconds = (x - now).seconds
 
     if not message:
         message = " ".join(sp[1:])

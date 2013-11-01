@@ -1,16 +1,11 @@
 from bot import BotPlugin
-import copy
+#import copy
 import random
 import os.path
+import shlex
+
 
 chatter = BotPlugin()
-
-
-@chatter.any
-def say_voicing(bot, user, channel, msg):
-    if bot.nickname in msg and not msg.startswith(bot.nickname):
-        l = ["quak", "quak", "schnatter", "quak quak"]
-        bot.msg(channel, random.choice(l))
 
 
 def get_data_from_file(fn=None):
@@ -33,10 +28,53 @@ def get_data_from_file(fn=None):
     return d
 
 
+@chatter.init
+def init():
+    chatter.stored.setdefault('keywordlines', get_data_from_file())
+
+
+@chatter.command("chatter add")
+def add_msg(bot, user, channel, msg):
+    args = shlex.split(msg)
+    if len(args) > 1:
+        keyword = args[0]
+        line = " ".join(args[1:])
+        with chatter.stored('keywordlines', True) as messages:
+            messages[keyword] = line
+            bot.msg(channel, "'%s': '%s' added" % (keyword, line))
+
+@chatter.command("chatter del")
+def del_msg(bot, user, channel, msg):
+    args = shlex.split(msg)
+    if args:
+        keyword = args[0]
+        with chatter.stored('keywordlines', True) as messages:
+            if keyword in messages:
+                line = messages[keyword]
+                del messages[keyword]
+                bot.msg(channel, "'%s': '%s' deleted" % (keyword, line))
+            else:
+                bot.msg(channel, "%s was not in keywords" % (keyword, ))
+
+
+@chatter.command("chatter list")
+def list_msgs(bot, user, channel, msg):
+    with chatter.stored('keywordlines', True) as messages:
+        line = "', '".join(messages.keys())
+        line = "'%s'" % line
+        bot.msg(channel, line)
+
+
+@chatter.any
+def say_voicing(bot, user, channel, msg):
+    if bot.nickname in msg and not msg.startswith(bot.nickname):
+        l = ["quak", "quak", "schnatter", "quak quak"]
+        bot.msg(channel, random.choice(l))
+
+
 @chatter.any
 def say_stuff(bot, user, channel, msg):
-    messages = get_data_from_file()
-
-    for m in messages.keys():
-        if m in msg.lower():
-            bot.msg(channel, messages.get(m))
+    with chatter.stored('keywordlines', True) as messages:
+        for m in messages.keys():
+            if m in msg.lower():
+                bot.msg(channel, messages.get(m))

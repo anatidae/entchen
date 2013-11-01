@@ -22,13 +22,13 @@ def meminfo(bot, user, channel, msg):
     (free, funit) = meminfo['MemFree'].split()
     total = int(total)
     free = int(free)
-    usedp = float(total-free)/float(total)*100.0
+    usedp = float(total - free) / float(total) * 100.0
     if tunit == funit:
         if tunit == "kB":
             bot.msg(channel,
-                    "Memory usage: %.2f%% total: %s mB free: %s mB"%
-                    (usedp, total/1024, free/1024))
+                    "Memory usage: %.2f%% total: %s mB free: %s mB" %
+                    (usedp, total / 1024, free / 1024))
         else:
             bot.msg(channel,
-                    "Memory usage: %.2f%% total: %s %s free: %s %s"%
-                    (usedp, total, tunit, free/1024, funit))
+                    "Memory usage: %.2f%% total: %s %s free: %s %s" %
+                    (usedp, total, tunit, free / 1024, funit))
