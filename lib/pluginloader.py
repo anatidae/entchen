@@ -44,6 +44,12 @@ def add_plugin(plugin, override=False, reraise=False):
     return ""
 
 
+def get_plugin(plugin):
+    global _plugins
+    if plugin in _plugins:
+        return _plugins[plugin]
+
+
 def del_plugin(plugin):
     global _plugins
     if plugin in _plugins:
@@ -137,6 +143,63 @@ def privmsg(bot, user, channel, msg):
                 del_plugin(arg)
         else:
             bot.msg(channel, 'unload needs one or more plugins to be unloaded')
+        return
+    elif msg.startswith('!help'):
+        args = msg.split()[1:]
+        if len(args) == 1:
+            for arg in args:
+                plugin = get_plugin(arg)
+                if plugin:
+                    bot.msg(
+                        channel,
+                        'Available commands for %s: %s' % (
+                            arg,
+                            " ".join(
+                                [k.__command_head__ for k in plugin._handlers_msg.values()]
+                            )
+                        )
+                    )
+                else:
+                    bot.msg(channel, 'Plugin %s not found' % arg)
+        elif len(args) > 1:
+            plugin_name = args.pop(0)
+            plugin = get_plugin(plugin_name)
+            if plugin:
+                for arg in args:
+                    found = False
+                    for command in plugin._handlers_msg.values():
+                        if command.__command_head__ == arg:
+                            helptxt = command.__doc__
+                            if not helptxt:
+                                helptxt = "No doc available"
+                            bot.msg(
+                                channel, str(helptxt)
+                            )
+                            found = True
+                            break;
+                    if not found:
+                        bot.msg(
+                            channel,
+                            'Command %s in plugin %s not found' % (
+                                arg,
+                                plugin_name
+                            )
+                        )
+            else:
+                bot.msg(channel, 'Plugin %s not found' % plugin_name)
+        else:
+            bot.msg(
+                channel,
+                '!help <plugin> [<command>] - Show help for plugin/command'
+            )
+            bot.msg(
+                channel,
+                '!plugins - List available plugins'
+            )
+            bot.msg(
+                channel,
+                '!(load|unload|reload) - Load/unload/reload a plugin'
+            )
         return
     elif msg.startswith('!plugins'):
         args = msg.split()[1:]

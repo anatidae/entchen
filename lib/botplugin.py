@@ -142,6 +142,7 @@ class BotPlugin(object):
                         return f(bot, user, channel, msg1)
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
+        wrapped.__command_head__ = head
         self._handlers_msg[wrapped.__name__] = wrapped
         return wrapped
 
