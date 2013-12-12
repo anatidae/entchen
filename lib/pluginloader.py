@@ -145,7 +145,7 @@ def privmsg(bot, user, channel, msg):
             bot.msg(channel, 'unload needs one or more plugins to be unloaded')
         return
     elif msg.startswith('!help'):
-        args = msg.split()[1:]
+        args = msg.split(' ', 2)[1:]
         if len(args) == 1:
             for arg in args:
                 plugin = get_plugin(arg)
