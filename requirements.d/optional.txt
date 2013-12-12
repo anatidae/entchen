@@ -1,5 +1,7 @@
 # for dice
 plex==2.0.0dev
+# for btc
+requests
 # currently no benefits, but I plan on using this soon
 geventreactor
 # for testing
