@@ -143,6 +143,7 @@ class BotPlugin(object):
         wrapped.__name__ = f.__name__
         wrapped.__doc__ = f.__doc__
         wrapped.__command_head__ = head
+        wrapped.__handler_type__ = 'command'
         self._handlers_msg[wrapped.__name__] = wrapped
         return wrapped
 

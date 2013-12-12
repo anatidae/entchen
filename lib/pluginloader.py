@@ -150,17 +150,27 @@ def privmsg(bot, user, channel, msg):
             for arg in args:
                 plugin = get_plugin(arg)
                 if plugin:
+                    l = []
+                    for k in plugin._handlers_msg.values():
+                        if hasattr(k, '__handler_type__') and \
+                           k.__handler_type__ == 'command':
+                            if isinstance(k.__command_head__, list):
+                                l.append(
+                                    '(%s)' % unicode(
+                                        '|'.join(k.__command_head__)
+                                    )
+                                )
+                            else:
+                                l.append(unicode(k.__command_head__))
                     bot.msg(
                         channel,
-                        'Available commands for %s: %s' % (
+                        u'Available commands for %s: %s' % (
                             arg,
-                            ", ".join(
-                                [unicode(k.__command_head__) for k in plugin._handlers_msg.values()]
-                            )
+                            u", ".join(l)
                         )
                     )
                 else:
-                    bot.msg(channel, 'Plugin %s not found' % arg)
+                    bot.msg(channel, u'Plugin %s not found' % arg)
         elif len(args) > 1:
             plugin_name = args.pop(0)
             plugin = get_plugin(plugin_name)
@@ -184,13 +194,13 @@ def privmsg(bot, user, channel, msg):
                     if not found:
                         bot.msg(
                             channel,
-                            'Command %s in plugin %s not found' % (
+                            u'Command %s in plugin %s not found' % (
                                 arg,
                                 plugin_name
                             )
                         )
             else:
-                bot.msg(channel, 'Plugin %s not found' % plugin_name)
+                bot.msg(channel, u'Plugin %s not found' % plugin_name)
         else:
             bot.msg(
                 channel,
