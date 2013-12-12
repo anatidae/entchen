@@ -154,8 +154,8 @@ def privmsg(bot, user, channel, msg):
                         channel,
                         'Available commands for %s: %s' % (
                             arg,
-                            " ".join(
-                                [k.__command_head__ for k in plugin._handlers_msg.values()]
+                            ", ".join(
+                                [unicode(k.__command_head__) for k in plugin._handlers_msg.values()]
                             )
                         )
                     )
@@ -168,12 +168,16 @@ def privmsg(bot, user, channel, msg):
                 for arg in args:
                     found = False
                     for command in plugin._handlers_msg.values():
-                        if command.__command_head__ == arg:
+                        if isinstance(command.__command_head__, list):
+                            commandlist = command.__command_head__
+                        else:
+                            commandlist = [command.__command_head__]
+                        if arg in commandlist:
                             helptxt = command.__doc__
                             if not helptxt:
                                 helptxt = "No doc available"
                             bot.msg(
-                                channel, str(helptxt)
+                                channel, unicode(helptxt)
                             )
                             found = True
                             break;
