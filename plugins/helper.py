@@ -7,9 +7,7 @@ helper = BotPlugin()
 
 @helper.command('help')
 def help(bot, user, channel, msg):
-    """
-        help <plugin> [<command>] - Show help for plugin/command
-    """
+    """help <plugin> [<command>] - Show help for plugin/command"""
     global _plugins
     args = msg.split(' ', 2)[0:]
     if len(args) == 1 and args[0]:
@@ -68,12 +66,27 @@ def help(bot, user, channel, msg):
         else:
             bot.msg(channel, u'Plugin %s not found' % plugin_name)
     else:
+        help(bot, user, channel, '!help helper help')
+        help(bot, user, channel, '!help helper plugins')
         bot.msg(
             channel,
-            '!plugins - List available plugins'
+            'load|unload|reload - Load/unload/reload a plugin'
         )
-        bot.msg(
-            channel,
-            '!(load|unload|reload) - Load/unload/reload a plugin'
-        )
+
+
+@helper.command('plugins')
+def plugins(bot, user, channel, msg):
+    '''plugins - List available plugins'''
+    global _plugins
+    args = msg.split()[1:]
+    if len(args) == 0:
+        keys = sorted(_plugins.keys())
+
+        bot.msg(channel,
+                'Plugins loaded: %s' %
+                (' '.join(keys),))
+    elif args[0] == "save":
+        _factory.config.plugins = _plugins.keys()
+        bot.msg(channel, 'Plugins saved')
+
 

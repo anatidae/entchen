@@ -146,29 +146,6 @@ def privmsg(bot, user, channel, msg):
         else:
             bot.msg(channel, 'unload needs one or more plugins to be unloaded')
         return
-    elif msg.startswith('!plugins'):
-        args = msg.split()[1:]
-        if len(args) == 0:
-            keys = sorted(_plugins.keys())
-
-            bot.msg(channel,
-                    'Plugins loaded: %s' %
-                    (' '.join(keys),))
-        elif args[0] == "save":
-            _factory.config.plugins = _plugins.keys()
-            bot.msg(channel, 'Plugins saved')
-    elif msg.startswith('!join'):
-        args = msg.split()[1:]
-        if len(args) > 0:
-            for arg in args:
-                bot.join(arg)
-    elif msg.startswith('!part'):
-        args = msg.split()[1:]
-        if len(args) > 0:
-            for arg in args:
-                bot.part(arg)
-        else:
-            bot.part(channel)
     else:
         for plugin in _plugins.values():
             plugin.privmsghandler(bot, user, channel, msg)
