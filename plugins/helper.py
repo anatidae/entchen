@@ -1,6 +1,5 @@
 from bot import BotPlugin
-import requests
-from lib.pluginloader import get_plugin
+from lib.pluginloader import get_plugin, _plugins, _factory
 
 helper = BotPlugin()
 
@@ -8,7 +7,6 @@ helper = BotPlugin()
 @helper.command('help')
 def help(bot, user, channel, msg):
     """help <plugin> [<command>] - Show help for plugin/command"""
-    global _plugins
     args = msg.split(' ', 2)[0:]
     if len(args) == 1 and args[0]:
         for arg in args:
@@ -54,7 +52,7 @@ def help(bot, user, channel, msg):
                             channel, unicode(helptxt)
                         )
                         found = True
-                        break;
+                        break
                 if not found:
                     bot.msg(
                         channel,
@@ -77,7 +75,6 @@ def help(bot, user, channel, msg):
 @helper.command('plugins')
 def plugins(bot, user, channel, msg):
     '''plugins - List available plugins'''
-    global _plugins
     args = msg.split()[1:]
     if len(args) == 0:
         keys = sorted(_plugins.keys())
