@@ -1,6 +1,6 @@
 class Config:
     plugins = ['chatter', 'date', 'alarm', 'randomness', 'birthday', 'sysinfo',
-        'shorten', 'regex', 'helper', 'channel']
+               'shorten', 'regex', 'helper', 'channel', 'btc']
     port = 6667
     ssl = False
     commandchars = "!"   # values like "!." mean either "!" or "."
