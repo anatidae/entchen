@@ -52,7 +52,7 @@ class IRCBot(irc.IRCClient):
     nickname = property(_get_nickname)
 
     def msg(self, user, message, length=None):
-        irc.IRCClient.msg(self, user, str(message), length)
+        irc.IRCClient.msg(self, user, message, length)
 
     ## Listeners - these get called by the bot when an event happens
     def signedOn(self):
