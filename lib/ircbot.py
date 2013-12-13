@@ -52,6 +52,8 @@ class IRCBot(irc.IRCClient):
     nickname = property(_get_nickname)
 
     def msg(self, user, message, length=None):
+        if isinstance(message, unicode):
+             message = unicode(message).encode("utf-8")
         irc.IRCClient.msg(self, user, message, length)
 
     ## Listeners - these get called by the bot when an event happens
