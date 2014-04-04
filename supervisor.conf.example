@@ -1,0 +1,7 @@
+[program:entchen]
+command = /home/entchen/bin/python /home/entchen/main.py freenode
+user = entchen
+stdout_logfile = /home/entchen/logs/gunicorn_supervisor.log
+redirect_stderr = true
+directory = /home/entchen
+
