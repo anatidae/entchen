@@ -6,12 +6,16 @@ date = BotPlugin()
 
 @date.command('date')
 def say_date(bot, user, channel, msg):
+    """ show current date
+    """
     m = "%s" % time.strftime("%a, %b %d, %Y", time.localtime())
     bot.msg(channel, m)
 
 
 @date.command('time')
 def say_time(bot, user, channel, msg):
+    """ show current time
+    """
     m = "%s" % time.strftime("%I:%M %p", time.localtime())
     bot.msg(channel, m)
 
