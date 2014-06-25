@@ -3,19 +3,24 @@ from bot import BotPlugin
 yo = BotPlugin()
 
 
-@yo.command('yo')
-def show_yo(bot, user, channel, msg):
-    """
-        Send yo to someone
-    """
+def send_message(bot, user, channel, msg, message):
     username = user.split('!')[0]
-    m = "%s sends you: Yo!" % username
+    m = "%s sends you: %s" % (username, message)
     sp = msg.split()
     try:
         for elem in sp:
             to_user = str(elem)
             bot.msg(to_user, m)
     except:
+        return False
+
+
+@yo.command('yo')
+def show_yo(bot, user, channel, msg):
+    """
+        Send yo to someone
+    """
+    if send_message(bot, user, channel, msg, "Yo!"):
         bot.msg(channel, "!yo <nick>")
 
 
@@ -24,12 +29,5 @@ def show_noe(bot, user, channel, msg):
     """
         Send noe to someone
     """
-    username = user.split('!')[0]
-    m = "%s sends you: Noe!" % username
-    sp = msg.split()
-    try:
-        for elem in sp:
-            to_user = str(elem)
-            bot.msg(to_user, m)
-    except:
+    if send_message(bot, user, channel, msg, "Noe!"):
         bot.msg(channel, "!noe <nick>")
