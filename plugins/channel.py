@@ -27,4 +27,3 @@ def part(bot, user, channel, msg):
     else:
         bot.msg(channel, 'Bye')
         bot.part(str(channel))
-

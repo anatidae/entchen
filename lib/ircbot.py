@@ -76,11 +76,7 @@ class IRCBot(irc.IRCClient):
         self.factory.plugins.action(self, user, channel, msg)
 
     def privmsg(self, user, channel, msg):
-        """This will get called when the bot receives a message."""
-
         self.factory.plugins.privmsg(self, user, channel, msg)
-        # for plugin in self.factory._plugins.values():
-        #     plugin.privmsg(self, user, channel, msg)
 
     def callLater(self, seconds, function, *args, **kwargs):
         self.factory.reactor.callLater(seconds, function, *args, **kwargs)
