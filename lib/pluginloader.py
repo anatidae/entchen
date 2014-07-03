@@ -115,7 +115,8 @@ def privmsg(bot, user, channel, msg):
                 error = reload_plugin(arg)
                 if error:
                     bot.msg(channel, 'error loading %s, see query' % arg)
-                    bot.msg(user, error)
+                    usernick = user.split('!')[0]
+                    bot.msg(usernick, error)
                     print error
         else:
             # there's a bug that breaks storage when reloading the loader.
@@ -132,7 +133,8 @@ def privmsg(bot, user, channel, msg):
                 error = add_plugin(arg)
                 if error:
                     bot.msg(channel, 'error loading %s, see query' % arg)
-                    bot.msg(user, error)
+                    usernick = user.split('!')[0]
+                    bot.msg(usernick, error)
                     print error
         else:
             bot.msg(channel, 'load needs one or more plugins to be loaded')
