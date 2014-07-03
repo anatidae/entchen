@@ -3,6 +3,9 @@ plex==2.0.0dev
 # for btc
 requests
 # currently no benefits, but I plan on using this soon
-geventreactor
+# UPDATE: maybe not the best idea
+# geventreactor
 # for testing
 pytest
+# for sentry
+raven

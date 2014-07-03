@@ -36,7 +36,6 @@ class Bot:
     def run(self):
         if self.config and self.factory and self.reactor:
             from twisted.python import log
-            from raven.handlers.logging import SentryHandler
             if self.config.ssl:
                 from twisted.internet import ssl
                 self.reactor.connectSSL(self.config.server,
@@ -48,6 +47,7 @@ class Bot:
                                         self.config.port,
                                         self.factory)
             if hasattr(self.config, 'sentry_dsn'):
+                from raven.handlers.logging import SentryHandler
                 self.sentry = SentryHandler(self.config.sentry_dsn)
                 l = logging.getLogger('twisted')
                 l.addHandler(self.sentry)
