@@ -10,6 +10,7 @@ class IRCBot(irc.IRCClient):
     # from http://stackoverflow.com/questions/6671620/list-users-in-irc-channel-using-twisted-python-irc-framework?lq=1
     def __init__(self, *args, **kwargs):
         self._namescallback = {}
+        self._whoiscallbacks = {}
 
     def names(self, channel):
         channel = channel.lower()
@@ -44,6 +45,45 @@ class IRCBot(irc.IRCClient):
         del self._namescallback[channel]
 
     # end of names calls #
+
+    def irc_330(self, prefix, params):
+        """
+        this is a part of the whois reply
+        it has to be handled asynchronously since this receiver
+        has no info about where, how or why the whois was requested
+
+        on Freenode, this is a message in this form:
+        :prefix: the name of the IRC server you are connected to
+        :params: a list in this form:
+          [YOURNAME, HISNAME, HISNICKSERVNAME, MESSAGE]
+        the MESSAGE is plaintext
+        the string you would see in your client would be
+        HISNAME MESSAGE HISNICKSERVNAME
+
+        example params:
+        ['entchen', 'Jon', 'JonDoe', 'is logged in as']
+        which would be displayed as "Jon is logged in as JonDoe"
+        by an IRC client
+        """
+        if len(params) == 4:
+            nickname = params[1]
+            if nickname in self._whoiscallbacks:
+                if params[3] == 'is logged in as':
+                    account = params[2]
+                    self._whoiscallbacks[nickname].callback(account)
+                else:
+                    self._whoiscallbacks[nickname].callback(False)
+                del self._whoiscallbacks[nickname]
+        print """received 330 prefix "%s" params "%s" """ % (prefix, params)
+
+    def irc_unknown(self, prefix, command, params):
+        """
+        this is a fallback event handler which gets called for all events
+        we don't handle. All other irc_* methods take precedence.
+        """
+        #TODO: only print this in debug mode? command line switch?
+        print """received unknown prefix "%s" command "%s" params "%s" """ % \
+            (prefix, command, params)
 
     def _get_nickname(self):
         if not hasattr(self, '_nickname'):
