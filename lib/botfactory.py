@@ -8,7 +8,7 @@ from botstorage import BotStorage, BotConfigWrapper
 import importlib
 
 
-class BotFactory(protocol.ClientFactory):  # REFACTOR needs a generic name
+class BotFactory(protocol.ClientFactory):
     protocol = IRCBot
 
     def __init__(self, config, reactor):
