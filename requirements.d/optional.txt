@@ -7,5 +7,5 @@ requests
 # geventreactor
 # for testing
 pytest
-# for sentry
-raven
+# for network plugin (whois)
+pythonwhois

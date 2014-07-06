@@ -1,2 +1,4 @@
 Twisted
 pyOpenSSL
+# for sentry
+raven
