@@ -3,10 +3,12 @@
  Entchen --- irc bot based on Twisted
 ======================================
 
-requirements
-============
+install
+=======
 
- * twisted
+* setup virtualenv
+* install requirements from `requirements.d/base.txt`
+* modify main.py for your needs
 
 
 todos
@@ -17,5 +19,3 @@ todos
  * .help for commands / plugins
  * some kind of acl for sensitive commands (i.e. git, sysinfo, ...)
  * plugin for adding rtm tasks to a user (via api or via email)
-
-
