@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bot import BotPlugin
 from twisted.internet import defer
 

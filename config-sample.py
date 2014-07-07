@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Config:
     plugins = ['chatter', 'date', 'alarm', 'randomness', 'birthday', 'sysinfo',
                'shorten', 'regex', 'helper', 'channel', 'btc']

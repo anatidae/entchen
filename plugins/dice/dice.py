@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 I wrote this when I was bored after too many compiler design lessons
 

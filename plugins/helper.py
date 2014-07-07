@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bot import BotPlugin
 from lib.pluginloader import get_plugin, _plugins, _factory
 

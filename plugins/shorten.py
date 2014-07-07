@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bot import BotPlugin
 from os.path import expanduser, expandvars
 import json
