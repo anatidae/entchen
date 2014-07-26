@@ -58,3 +58,17 @@ def say_whois_twisted(bot, user, channel, msg):
     usernick = user.split('!')[0]
     d.addCallback(lambda response: bot.msg(usernick, response))
     d.addErrback(lambda failure: bot.msg(usernick, str(failure)))
+
+
+@network.command('host')
+def say_host(bot, user, channel, msg):
+    '''Resolves the given domain to A and AAAA records'''
+    from .host import lookup_host
+    lookup_host(bot, user, channel, msg, False)
+
+
+@network.command('best_host')
+def say_best_host(bot, user, channel, msg):
+    '''Resolves the given domain to the most suitable IP'''
+    from .host import lookup_host
+    lookup_host(bot, user, channel, msg, True)
