@@ -25,7 +25,7 @@ def say_time(bot, user, channel, msg):
 @date.command('dt')
 def say_datetime(bot, user, channel, msg):
     """Print current date and time"""
-    m = "Todas is %s and it's %s" % (
+    m = "Today is %s and it's %s" % (
         time.strftime("%a, %b %d, %Y", time.localtime()),
         time.strftime("%I:%M %p", time.localtime())
     )
