@@ -1,7 +1,6 @@
 # coding=utf-8
 
 from bot import BotPlugin
-#import copy
 import random
 import os.path
 import shlex
