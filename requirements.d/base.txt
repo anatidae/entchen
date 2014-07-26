@@ -3,3 +3,4 @@ pyOpenSSL
 # for sentry
 raven
 requests
+zipa
