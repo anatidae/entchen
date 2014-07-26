@@ -11,8 +11,8 @@ def lookup_host(bot, user, channel, msg, guess_best):
     if len(hostname):
         if guess_best:
             d = client.getHostByName(hostname)
-            d.addCallback(resultCb, hostname, bot, channel)
-            d.addErrback(errorCb, hostname, bot, channel)
+            d.addCallback(resultCb, hostname, bot, user, channel)
+            d.addErrback(errorCb, hostname, bot, user, channel)
         else:
             pending = []
             pending.append(client.lookupAddress(hostname))
@@ -39,6 +39,7 @@ def resultCb(address, hostname, bot, user, channel):
             if result[0]:  # success flag
                 for rr in result[1][0]:
                     type_str = dns.QUERY_TYPES.get(rr.type)
+                    # https://twistedmatrix.com/trac/ticket/7543
                     if type_str == 'A':
                         msgs.append('{}: {}'.format(type_str, rr.payload.dottedQuad()))
                     else:
