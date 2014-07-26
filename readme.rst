@@ -3,19 +3,20 @@
  Entchen --- irc bot based on Twisted
 ======================================
 
-install
+Install
 =======
 
-* setup virtualenv
-* install requirements from `requirements.d/base.txt`
-* modify main.py for your needs
+* Set up virtualenv: `mkvirtualenv --no-site-packages entchen`
+* On debian or ubuntu install `libffi-dev`; on other distributions find and install its equivalent
+* Install requirements from requirements.d/base.txt: `pip install -r requirements.d/base.txt`
+* Modify main.py for your needs
 
 
-todos
+Todos
 =====
 
- * lots of cleanup
- * documentation
+ * Lots of cleanup
+ * Documentation
  * .help for commands / plugins
- * some kind of acl for sensitive commands (i.e. git, sysinfo, ...)
- * plugin for adding rtm tasks to a user (via api or via email)
+ * Some kind of acl for sensitive commands (i.e. git, sysinfo, ...)
+ * Plugin for adding rtm tasks to a user (via api or via email)
