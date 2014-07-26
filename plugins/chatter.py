@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from bot import BotPlugin
 #import copy
 import random
