@@ -53,11 +53,6 @@ issue_type = "issue"
 def search_issues(bot, user, channel, msg):
     """
     searches github.com for entchen's issues via api
-
-    :param bot:
-    :param user:
-    :param channel:
-    :param msg: str
     """
     if not msg:
         return
