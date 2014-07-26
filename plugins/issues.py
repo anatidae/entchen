@@ -57,22 +57,37 @@ def search_issues(bot, user, channel, msg):
     if not msg:
         return
 
-    if numberish(msg):
-        number = extract_number(msg)
-        issue = gh['repos']['anatidae']['entchen']['issues'][number]()
-        url = issue['html_url']
+    query = "{} {} {}".format(msg, default_state, repo)
+    issue_list = gh['search']['issues'](q=query, sort=sort, type=issue_type)
 
-        send_txt = "#{} at {} {}".format(number, url, issue['title'])
-    else:
-        query = "{} {} {}".format(msg, default_state, repo)
-        issue_list = gh['search']['issues'](q=query, sort=sort, type=issue_type)
-
+    if int(issue_list['total_count']) > 0:
         urls = []
         for each_issue in issue_list['items']:
             each_url = each_issue['html_url']
             urls.append(each_url)
 
         send_txt = " ".join(urls)
+    else:
+        send_txt = "No issues for '{}' found".format(msg)
 
     bot.msg(channel, send_txt)
 
+@issues.command('issue')
+def show_issue(bot, user, channel, msg):
+    """
+    shows link to given issue number if it is still open
+    """
+    if not msg:
+        return
+
+    if numberish(msg):
+        number = extract_number(msg)
+        try:
+            issue = gh['repos']['anatidae']['entchen']['issues'][number]()
+            url = issue['html_url']
+
+            send_txt = "#{} at {} {}".format(number, url, issue['title'])
+        except KeyError:
+            send_txt = "#{} not found or not open"
+
+        bot.msg(channel, send_txt)
