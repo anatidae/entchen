@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
+
 from bot import BotPlugin
-#import copy
 import random
 import os.path
 import shlex
@@ -36,7 +36,7 @@ def init():
 
 @chatter.command("chatter add")
 def add_msg(bot, user, channel, msg):
-    args = shlex.split(msg)
+    args = shlex.split(msg.encode('utf-8'))
     if len(args) > 1:
         keyword = args[0]
         line = " ".join(args[1:])
@@ -46,7 +46,7 @@ def add_msg(bot, user, channel, msg):
 
 @chatter.command("chatter del")
 def del_msg(bot, user, channel, msg):
-    args = shlex.split(msg)
+    args = shlex.split(msg.encode('utf-8'))
     if args:
         keyword = args[0]
         with chatter.stored('keywordlines', True) as messages:
