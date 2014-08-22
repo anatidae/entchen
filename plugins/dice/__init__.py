@@ -8,7 +8,7 @@ dice = BotPlugin()
 
 
 @dice.init
-def init():
+def init(bot):
     random.seed()
 
 

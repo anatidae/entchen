@@ -5,7 +5,7 @@ test = BotPlugin()
 
 
 @test.init
-def init():
+def init(bot):
     print "init"
     test.stored.setdefault("abc", 0)
 

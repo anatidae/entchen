@@ -30,7 +30,7 @@ def get_data_from_file(fn=None):
 
 
 @chatter.init
-def init():
+def init(bot):
     chatter.stored.setdefault('keywordlines', get_data_from_file())
 
 

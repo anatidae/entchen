@@ -11,10 +11,12 @@ import importlib
 class BotFactory(protocol.ClientFactory):
     protocol = IRCBot
 
-    def __init__(self, config, reactor):
+    def __init__(self, config, reactor, webresource=None):
         self.storage = BotStorage(config.storage)
         self.config = BotConfigWrapper(self.storage, config)
         self.reactor = reactor
+        self.webresource = webresource
+
         self.plugins = importlib.import_module('lib.pluginloader')
         self.plugins._init_plugins(self)
 

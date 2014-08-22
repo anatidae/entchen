@@ -71,8 +71,8 @@ class BotPlugin(object):
     def bindto(self, factory):
         if self.factory is None:
             self.factory = factory
-            for func in self._handlers_init:
-                func()
+            for handler in self._handlers_init:
+                handler(self.factory)
         else:
             raise
 
