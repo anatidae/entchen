@@ -1,6 +1,8 @@
 # coding=utf-8
 import re
 
+from twisted.web.resource import Resource
+
 from bot import BotPlugin
 # noinspection PyUnresolvedReferences
 from zipa import api_github_com as gh
@@ -48,6 +50,20 @@ repo = "repo:anatidae/entchen"
 sort = "updated"
 issue_type = "issue"
 
+class GitHubAPICallback(Resource):
+
+    def render_GET(self, request):
+        # bot.msg("#kinder", unicode(request.args))
+        return repr(request.args)
+
+@issues.init
+def init_issues(bot):
+    if bot.webresource is None:
+        print "Webserver isn't available!"
+        return
+
+    print "Issues Plugin init"
+    bot.webresource.putChild("github", GitHubAPICallback())
 
 @issues.command('issues')
 def search_issues(bot, user, channel, msg):
