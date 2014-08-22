@@ -81,9 +81,11 @@ class IRCBot(irc.IRCClient):
         this is a fallback event handler which gets called for all events
         we don't handle. All other irc_* methods take precedence.
         """
+
         #TODO: only print this in debug mode? command line switch?
-        print """received unknown prefix "%s" command "%s" params "%s" """ % \
-            (prefix, command, params)
+        print 'received unknown prefix "%s" command "%s" params "%s"' % (
+            prefix, command, params
+        )
 
     def _get_nickname(self):
         if not hasattr(self, '_nickname'):
@@ -101,6 +103,10 @@ class IRCBot(irc.IRCClient):
         print "Signed on as %s." % (self.nickname,)
         for channel in self.factory.config.channels:
             self.join(channel)
+
+        # Give the factory access to the bot
+        # This breaks the multi bot design... but it's alread broken
+        self.factory.bot = self
 
     def joined(self, channel):
         print "Joined %s." % (channel,)

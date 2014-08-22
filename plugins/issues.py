@@ -52,18 +52,24 @@ issue_type = "issue"
 
 class GitHubAPICallback(Resource):
 
+    def __init__(self, bot, *args, **kwargs):
+        self.bot = bot
+
     def render_GET(self, request):
-        # bot.msg("#kinder", unicode(request.args))
+        self.bot.msg("#kinder", unicode(request.args))
         return repr(request.args)
 
 @issues.init
-def init_issues(bot):
-    if bot.webresource is None:
+def init_issues(factory):
+    if factory.webresource is None:
         print "Webserver isn't available!"
         return
 
     print "Issues Plugin init"
-    bot.webresource.putChild("github", GitHubAPICallback())
+    if hasattr(factory, "bot"):
+        factory.webresource.putChild("github", GitHubAPICallback(factory.bot))
+    else:
+        print "No bot instance...."
 
 @issues.command('issues')
 def search_issues(bot, user, channel, msg):
