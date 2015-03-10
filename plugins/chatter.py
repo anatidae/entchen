@@ -78,4 +78,7 @@ def say_stuff(bot, user, channel, msg):
     with chatter.stored('keywordlines', True) as messages:
         for m in messages.keys():
             if m in msg.lower():
+                import random
+                m = m.split(' | ')
+                m = m[random.randint(0, len(m)-1)]
                 bot.msg(channel, messages.get(m))
