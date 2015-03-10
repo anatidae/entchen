@@ -81,4 +81,4 @@ def say_stuff(bot, user, channel, msg):
                 import random
                 msgs = messages.get(m, '').split(' | ')
                 msg = msgs[random.randint(0, len(msgs)-1)]
-                bot.msg(channel, messages.get(msg))
+                bot.msg(channel, msg)
