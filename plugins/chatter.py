@@ -80,5 +80,5 @@ def say_stuff(bot, user, channel, msg):
             if m in msg.lower():
                 import random
                 msgs = messages.get(m, '').split(' | ')
-                msg = msgs[random.randint(0, len(msgs)-1)]
-                bot.msg(channel, msg)
+                answer = msgs[random.randint(0, len(msgs)-1)]
+                bot.msg(channel, answer)
